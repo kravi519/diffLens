@@ -62,21 +62,13 @@ CATEGORY_SLICES = {
 DONUT_SIZE = 140
 
 
-def slice_color(hex_color: str, dark: bool) -> str:
-    """Slice colours are tuned for a light page; on a dark page they are mixed 30% toward white."""
-    if not dark:
-        return hex_color
-    rgb = [int(hex_color[i:i + 2], 16) for i in (1, 3, 5)]
-    return "#" + "".join(f"{round(c + (255 - c) * 0.3):02X}" for c in rgb)
-
-
 def donut(counts: dict[str, int], slices: dict[str, tuple[str, str]], center: str, center_label: str,
           palette_index: int):
     """Ring of the non-zero counts with the headline in the hole. Returns (chart, legend) or None,
     where legend is a list of (colour, name, count)."""
     roles = TILE_PALETTES[palette_index][3]
     dark = st.context.theme.type == "dark"
-    present = [(i, key, name, slice_color(roles[role], dark))
+    present = [(i, key, name, roles[role])
                for i, (key, (name, role)) in enumerate(slices.items()) if counts.get(key, 0)]
     if not present:
         return None
@@ -107,36 +99,36 @@ def donut(counts: dict[str, int], slices: dict[str, tuple[str, str]], center: st
     return chart, [(color, name, counts[key]) for _, key, name, color in present]
 
 
-# Premium palettes for the KPI tiles, chart cards and donut slices; every run moves on to the next one.
-# Each entry: (name, card accent, five tile gradients, donut slice colour per role). Each tile is a
-# 135° gradient (start, end) carrying white text, so every start colour is dark enough for small labels
-# and every end colour keeps white values readable, in both light and dark mode. Slice colours are 600
-# shades for a light page (lightened for dark mode by slice_color); "bad" is a red tone in every palette.
+# Light premium palettes for the KPI tiles, chart cards and donut slices; every run moves on to the next one.
+# Each entry: (name, card accent, five tile gradients, donut slice colour per role). Tiles are soft
+# 135° pastel gradients (50 -> 100/200 shades) with dark text, so they read the same in light and dark
+# mode. Slices are light 300-400 shades; "bad" (failed, regression) is a red/rose tone in every palette
+# and "good" (passed, fixed) the palette's main colour.
 TILE_PALETTES = [
-    ("Royal", "#6366F1", [("#1E1B4B", "#4F46E5"), ("#2E1065", "#7C3AED"), ("#172554", "#2563EB"),
-                          ("#042F2E", "#0F766E"), ("#0F172A", "#475569")],
-     {"good": "#4F46E5", "bad": "#E11D48", "warn": "#D97706", "diff": "#0D9488",
-      "alt1": "#0284C7", "alt2": "#9333EA", "neutral": "#64748B"}),
-    ("Emerald & gold", "#059669", [("#022C22", "#047857"), ("#422006", "#A16207"), ("#052E16", "#15803D"),
-                                   ("#451A03", "#B45309"), ("#042F2E", "#0F766E")],
-     {"good": "#059669", "bad": "#DC2626", "warn": "#CA8A04", "diff": "#0E7490",
-      "alt1": "#2563EB", "alt2": "#7C3AED", "neutral": "#78716C"}),
-    ("Rose & plum", "#DB2777", [("#4A044E", "#A21CAF"), ("#4C0519", "#BE123C"), ("#3B0764", "#7E22CE"),
-                                ("#500724", "#BE185D"), ("#1E1B4B", "#6D28D9")],
-     {"good": "#7E22CE", "bad": "#E11D48", "warn": "#D97706", "diff": "#0D9488",
-      "alt1": "#C026D3", "alt2": "#4F46E5", "neutral": "#78716C"}),
-    ("Ocean", "#0284C7", [("#082F49", "#0369A1"), ("#083344", "#0E7490"), ("#042F2E", "#0F766E"),
-                          ("#172554", "#1D4ED8"), ("#0C4A6E", "#0284C7")],
-     {"good": "#0284C7", "bad": "#F43F5E", "warn": "#D97706", "diff": "#0D9488",
-      "alt1": "#6366F1", "alt2": "#7C3AED", "neutral": "#64748B"}),
-    ("Midnight & copper", "#EA580C", [("#0F172A", "#334155"), ("#431407", "#C2410C"), ("#1C1917", "#57534E"),
-                                      ("#422006", "#B45309"), ("#18181B", "#52525B")],
-     {"good": "#1E40AF", "bad": "#B91C1C", "warn": "#EA580C", "diff": "#CA8A04",
-      "alt1": "#0E7490", "alt2": "#7C3AED", "neutral": "#57534E"}),
-    ("Aurora", "#8B5CF6", [("#312E81", "#0E7490"), ("#4C1D95", "#BE185D"), ("#134E4A", "#4338CA"),
-                           ("#831843", "#C2410C"), ("#0C4A6E", "#7C3AED")],
-     {"good": "#0891B2", "bad": "#E11D48", "warn": "#D97706", "diff": "#8B5CF6",
-      "alt1": "#4338CA", "alt2": "#DB2777", "neutral": "#64748B"}),
+    ("Royal", "#A5B4FC", [("#EEF2FF", "#E0E7FF"), ("#F5F3FF", "#EDE9FE"), ("#EFF6FF", "#DBEAFE"),
+                          ("#F0FDFA", "#CCFBF1"), ("#F8FAFC", "#E2E8F0")],
+     {"good": "#818CF8", "bad": "#FB7185", "warn": "#FBBF24", "diff": "#2DD4BF",
+      "alt1": "#38BDF8", "alt2": "#C084FC", "neutral": "#CBD5E1"}),
+    ("Emerald & gold", "#6EE7B7", [("#ECFDF5", "#D1FAE5"), ("#FFFBEB", "#FEF3C7"), ("#F0FDF4", "#DCFCE7"),
+                                   ("#FEFCE8", "#FEF9C3"), ("#F0FDFA", "#CCFBF1")],
+     {"good": "#34D399", "bad": "#F87171", "warn": "#FACC15", "diff": "#22D3EE",
+      "alt1": "#60A5FA", "alt2": "#A78BFA", "neutral": "#D6D3D1"}),
+    ("Rose & plum", "#F0ABFC", [("#FDF4FF", "#FAE8FF"), ("#FFF1F2", "#FFE4E6"), ("#FAF5FF", "#F3E8FF"),
+                                ("#FDF2F8", "#FCE7F3"), ("#F5F3FF", "#EDE9FE")],
+     {"good": "#C084FC", "bad": "#FB7185", "warn": "#FBBF24", "diff": "#5EEAD4",
+      "alt1": "#E879F9", "alt2": "#818CF8", "neutral": "#D6D3D1"}),
+    ("Ocean", "#7DD3FC", [("#F0F9FF", "#E0F2FE"), ("#ECFEFF", "#CFFAFE"), ("#F0FDFA", "#CCFBF1"),
+                          ("#EFF6FF", "#DBEAFE"), ("#F0F9FF", "#BAE6FD")],
+     {"good": "#38BDF8", "bad": "#FDA4AF", "warn": "#FCD34D", "diff": "#5EEAD4",
+      "alt1": "#A5B4FC", "alt2": "#C4B5FD", "neutral": "#CBD5E1"}),
+    ("Peach & sand", "#FDBA74", [("#FFF7ED", "#FFEDD5"), ("#FFF1F2", "#FFE4E6"), ("#FAFAF9", "#F5F5F4"),
+                                 ("#FFFBEB", "#FEF3C7"), ("#FEF2F2", "#FEE2E2")],
+     {"good": "#FDBA74", "bad": "#F43F5E", "warn": "#FDE047", "diff": "#5EEAD4",
+      "alt1": "#93C5FD", "alt2": "#D8B4FE", "neutral": "#D6D3D1"}),
+    ("Aurora", "#C4B5FD", [("#EEF2FF", "#CFFAFE"), ("#F5F3FF", "#FCE7F3"), ("#F0FDFA", "#E0E7FF"),
+                           ("#FDF2F8", "#FFEDD5"), ("#E0F2FE", "#EDE9FE")],
+     {"good": "#22D3EE", "bad": "#FB7185", "warn": "#FCD34D", "diff": "#C4B5FD",
+      "alt1": "#A5B4FC", "alt2": "#F9A8D4", "neutral": "#CBD5E1"}),
 ]
 
 
@@ -150,21 +142,24 @@ def tile_styles(index: int) -> str:
     """CSS for the keyed KPI tiles (kpi_0..kpi_4) and chart cards (card_0..card_2) in one palette."""
     _, accent, gradients, _ = TILE_PALETTES[index]
     css = [
-        """[class*="st-key-kpi_"] { border-radius: 14px; padding: 16px 18px;
-             border: 1px solid rgba(255,255,255,.10); transition: background .5s ease, box-shadow .5s ease; }
+        f"""[class*="st-key-kpi_"] {{ border-radius: 14px; padding: 16px 18px;
+             border: 1px solid color-mix(in srgb, {accent} 45%, transparent);
+             transition: background .5s ease, box-shadow .5s ease; }}
            [class*="st-key-kpi_"] [data-testid="stMetricLabel"],
-           [class*="st-key-kpi_"] [data-testid="stMetricLabel"] p { color: rgba(255,255,255,.86) !important; }
-           [class*="st-key-kpi_"] [data-testid="stMetricValue"] { color: #FFFFFF !important; }
-           [class*="st-key-kpi_"] [data-testid="stMetricDelta"] { color: #FFFFFF !important;
-             background: rgba(255,255,255,.16) !important; }
-           [class*="st-key-kpi_"] svg { color: rgba(255,255,255,.86) !important; }""",
+           [class*="st-key-kpi_"] [data-testid="stMetricLabel"] p {{ color: #334155 !important; }}
+           [class*="st-key-kpi_"] [data-testid="stMetricValue"] {{ color: #0F172A !important; }}
+           [class*="st-key-kpi_"] [data-testid="stMetricDelta"] {{ color: #1E293B !important;
+             background: rgba(255,255,255,.65) !important; }}
+           [class*="st-key-kpi_"] svg {{ color: #475569 !important; }}
+           [class*="st-key-kpi_"] [data-testid="stTooltipIcon"] svg,
+           [class*="st-key-kpi_"] [data-testid="stTooltipIcon"] svg * {{ stroke: #475569 !important; }}""",
         f"""[class*="st-key-card_"] {{ border-top: 3px solid {accent} !important;
-             background: linear-gradient(180deg, color-mix(in srgb, {accent} 10%, transparent) 0%, transparent 45%);
+             background: linear-gradient(180deg, color-mix(in srgb, {accent} 16%, transparent) 0%, transparent 45%);
              transition: background .5s ease; }}""",
     ]
     for i, (start, end) in enumerate(gradients):
         css.append(f""".st-key-kpi_{i} {{ background: linear-gradient(135deg, {start} 0%, {end} 100%);
-             box-shadow: 0 10px 24px -14px {end}; }}""")
+             box-shadow: 0 10px 22px -16px {accent}; }}""")
     return "<style>" + "\n".join(css) + "</style>"
 
 
