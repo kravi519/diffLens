@@ -14,7 +14,7 @@ from comparator.compare import (
     CATEGORY_LABELS, CHANGED, FIXED, ONLY_LEGACY, ONLY_NEWGEN, OUTPUT_DIFF, REGRESSION, SAME, Comparison,
     category_counts, compare,
 )
-from comparator.java_runner import BUILD_TOOLS, ProjectConfig, RunResult, run_suite
+from comparator.java_runner import ProjectConfig, RunResult, run_suite
 from comparator.source import CACHED, FALLBACK, GITHUB, SourceResult, resolve_source
 
 HERE = Path(__file__).resolve().parent.parent  # project root (this page lives in app_pages/)
@@ -23,7 +23,7 @@ SIDE_NAMES = {"legacy": "Legacy", "newgen": "New gen"}
 # Default GitHub sources: (repository URL, branch, project folder in the repo). Changeable in the sidebar.
 LEGACY_REPO = ("https://github.com/kravi519/LegacyCode", "main", "legacy")
 NEWGEN_REPO = ("https://github.com/kravi519/NewGenCode", "main", "newgen")
-# Bundled copies: used when no GitHub URL is given or GitHub cannot be reached. Changeable in the sidebar.
+# Bundled copies: used when no GitHub URL is given or GitHub cannot be reached.
 LEGACY_ROOT = SAMPLE / "legacy"
 NEWGEN_ROOT = SAMPLE / "newgen"
 
@@ -55,10 +55,10 @@ CATEGORY_SLICES = {
 }
 # Same values as greenColor, redColor, ... in .streamlit/config.toml.
 THEME_COLORS = {
-    "light": {"green": "#059669", "red": "#DC2626", "orange": "#EA580C", "yellow": "#D97706",
-              "blue": "#1D4ED8", "violet": "#7C3AED", "gray": "#64748B"},
-    "dark": {"green": "#34D399", "red": "#F87171", "orange": "#FB923C", "yellow": "#FBBF24",
-             "blue": "#60A5FA", "violet": "#A78BFA", "gray": "#94A3B8"},
+    "light": {"green": "#1D4ED8", "red": "#DC2626", "orange": "#0D9488", "yellow": "#D97706",
+              "blue": "#0EA5E9", "violet": "#7C3AED", "gray": "#64748B"},
+    "dark": {"green": "#2563EB", "red": "#F87171", "orange": "#2DD4BF", "yellow": "#FBBF24",
+             "blue": "#38BDF8", "violet": "#A78BFA", "gray": "#94A3B8"},
 }
 DONUT_SIZE = 140
 
@@ -123,73 +123,43 @@ def donut_card(title: str, icon: str, donut_parts, alt_text: str, footnote: str)
 
 # ---------------------------------------------------------------- sidebar configuration
 
-def _paths(root: Path, text: str) -> list[Path]:
-    out = []
-    for line in text.replace(",", "\n").splitlines():
-        if line.strip():
-            p = Path(line.strip())
-            out.append(p if p.is_absolute() else root / p)
-    return out
+# Fixed build settings: both sides are compiled with javac from these folders inside the project.
+SOURCE_DIRS = ["src/main/java"]
+TEST_DIRS = ["src/test/java"]
+JAVAC_RELEASE = {"legacy": "8", "newgen": ""}
+LOCAL_ROOTS = {"legacy": LEGACY_ROOT, "newgen": NEWGEN_ROOT}
+INPUTS_DIR = SAMPLE / "inputs"
+TIMEOUT = 900  # seconds per suite
 
 
-def project_form(label: str, title: str, default_repo: tuple[str, str, str], default_root: Path,
-                 default_release: str) -> dict:
-    st.sidebar.subheader(title)
+def github_form(label: str, title: str, default_repo: tuple[str, str, str]) -> dict:
     default_url, default_ref, default_dir = default_repo
-    with st.sidebar.expander(":material/cloud_download: GitHub source", expanded=True):
-        url = st.text_input("Repository URL", default_url, key=f"{label}_gh_url",
-                            placeholder="https://github.com/org/repo",
-                            help="Leave blank to use the local folder. A /tree/<branch>/<path> URL also works.")
-        ref = st.text_input("Branch, tag or commit", default_ref, key=f"{label}_gh_ref", placeholder="default branch")
-        subdir = st.text_input("Project folder in the repo", default_dir, key=f"{label}_gh_dir",
-                               placeholder="repository root")
-    root = st.sidebar.text_input(
-        "Local folder (prebuilt fallback)", str(default_root), key=f"{label}_root",
-        help="Used when no GitHub URL is given, or when GitHub cannot be reached.")
-    build_tool = st.sidebar.selectbox("Build tool", BUILD_TOOLS, key=f"{label}_build")
-    cfg = {"root": root, "build_tool": build_tool, "gh_url": url, "gh_ref": ref, "gh_dir": subdir}
-    if build_tool == "javac":
-        cfg["sources"] = st.sidebar.text_input("Source dirs (relative to root)", "src/main/java", key=f"{label}_src")
-        cfg["tests"] = st.sidebar.text_input("Test dirs (relative to root)", "src/test/java", key=f"{label}_tests")
-        cfg["release"] = st.sidebar.text_input("javac --release", default_release, key=f"{label}_release")
-    cfg["java_home"] = st.sidebar.text_input("JDK home (blank = PATH)", "", key=f"{label}_jdk")
-    return cfg
+    st.sidebar.subheader(f":material/cloud_download: {title}")
+    return {
+        "gh_url": st.sidebar.text_input("Repository URL", default_url, key=f"{label}_gh_url",
+                                        placeholder="https://github.com/org/repo",
+                                        help="A /tree/<branch>/<path> URL also works. If GitHub cannot be "
+                                             f"reached, the bundled copy in sample/{label} is used."),
+        "gh_ref": st.sidebar.text_input("Branch, tag or commit", default_ref, key=f"{label}_gh_ref",
+                                        placeholder="default branch"),
+        "gh_dir": st.sidebar.text_input("Project folder in the repo", default_dir, key=f"{label}_gh_dir",
+                                        placeholder="repository root"),
+    }
 
 
-st.sidebar.header(":material/settings: Configuration")
-legacy_form = project_form("legacy", "Legacy code base", LEGACY_REPO, LEGACY_ROOT, "8")
-newgen_form = project_form("newgen", "New-gen code base", NEWGEN_REPO, NEWGEN_ROOT, "")
-st.sidebar.subheader("Shared")
-shared_inputs = st.sidebar.text_input(
-    "Shared input data dir", st.session_state.get("inputs_dir", str(SAMPLE / "inputs")),
-    help="Both test suites read their input cases from here (added to the test classpath in javac mode).")
-st.session_state.inputs_dir = shared_inputs  # read by the Input cases page
-extra_cp = st.sidebar.text_area("Extra classpath jars/dirs (one per line)", "")
-timeout = st.sidebar.number_input("Timeout per suite (s)", 60, 7200, 900, step=60)
-github_token = st.sidebar.text_input(
-    "GitHub access token", type="password",
-    help="Only needed for private repositories. Falls back to the GITHUB_TOKEN environment variable.")
-refresh_repos = st.sidebar.checkbox(
-    "Download the latest code on every run", value=True,
-    help="Off: reuse the last downloaded copy of each repository.")
+legacy_form = github_form("legacy", "Legacy GitHub source", LEGACY_REPO)
+newgen_form = github_form("newgen", "New-gen GitHub source", NEWGEN_REPO)
 
 
 def fetch_source(label: str, form: dict) -> SourceResult:
     return resolve_source(label, form["gh_url"], form["gh_ref"], form["gh_dir"],
-                          github_token.strip() or os.environ.get("GITHUB_TOKEN", ""), refresh_repos,
-                          Path(form["root"]).expanduser())
+                          os.environ.get("GITHUB_TOKEN", ""), True, LOCAL_ROOTS[label])
 
 
-def build_config(label: str, form: dict, root: Path) -> ProjectConfig:
-    cfg = ProjectConfig(label=label, root=root, build_tool=form["build_tool"],
-                        java_home=form["java_home"].strip(), timeout=int(timeout))
-    if cfg.build_tool == "javac":
-        cfg.source_dirs = _paths(root, form["sources"])
-        cfg.test_dirs = _paths(root, form["tests"])
-        cfg.input_dirs = _paths(HERE, shared_inputs)
-        cfg.release = form["release"].strip()
-        cfg.classpath = _paths(HERE, extra_cp)
-    return cfg
+def build_config(label: str, root: Path) -> ProjectConfig:
+    return ProjectConfig(label=label, root=root, build_tool="javac", timeout=TIMEOUT,
+                         source_dirs=[root / d for d in SOURCE_DIRS], test_dirs=[root / d for d in TEST_DIRS],
+                         input_dirs=[INPUTS_DIR], release=JAVAC_RELEASE[label])
 
 
 # ---------------------------------------------------------------- actions
@@ -208,7 +178,7 @@ if run_clicked:
                 sources = dict(zip(forms, pool.map(fetch_source, forms, forms.values())))
         else:
             sources = {label: fetch_source(label, form) for label, form in forms.items()}
-        configs = [build_config(label, forms[label], sources[label].root) for label in forms]
+        configs = [build_config(label, sources[label].root) for label in forms]
         with st.spinner("Building and testing both code bases in parallel…"):
             legacy_result, newgen_result = pool.map(run_suite, configs)
     st.session_state.sources = sources
@@ -263,10 +233,10 @@ def landing_page() -> None:
 
     st.info("The sample is pre-filled in the sidebar: downloaded from GitHub, or taken from `sample/legacy` and "
             "`sample/newgen` when GitHub cannot be reached. Click **Run tests** above to compare, "
-            "or point the sidebar at your own legacy and new-gen projects (javac, Maven or Gradle).",
+            "or point the GitHub sources in the sidebar at your own legacy and new-gen repositories.",
             icon=":material/lightbulb:")
-    st.page_link("app_pages/input_cases.py", label="Browse all input cases fed to both sides",
-                 icon=":material/dataset:")
+    st.page_link("app_pages/input_files.py", label="Browse all input cases and messages fed to both sides",
+                 icon=":material/folder_open:")
 
 
 if not results or len(results) < 2:

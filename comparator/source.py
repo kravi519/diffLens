@@ -13,6 +13,7 @@ import os
 import re
 import shutil
 import stat
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -120,11 +121,33 @@ def _download(repo: GitHubRepo, token: str, dest: Path) -> None:
     except zipfile.BadZipFile as e:
         raise SourceError("GitHub did not return a valid zip archive") from e
     (tmp / COMPLETE_MARKER).write_text(f"{repo.name}\n{datetime.now():%Y-%m-%d %H:%M}\n", encoding="utf-8")
+    # Swap by renaming, never by deleting first: on Windows a virus scanner or indexer can briefly lock
+    # freshly extracted files, and the old copy must survive a failed swap.
+    old = dest.with_name(dest.name + ".old")
+    _remove_tree(old)
     try:
-        _remove_tree(dest)
-        tmp.rename(dest)
+        if dest.exists():
+            _rename_with_retry(dest, old)
     except OSError as e:
         raise SourceError(f"could not replace the cached copy in {dest} ({e.strerror or e})") from e
+    try:
+        _rename_with_retry(tmp, dest)
+    except OSError as e:
+        if old.exists():
+            old.rename(dest)
+        raise SourceError(f"could not replace the cached copy in {dest} ({e.strerror or e})") from e
+    shutil.rmtree(old, ignore_errors=True)
+
+
+def _rename_with_retry(src: Path, dst: Path, attempts: int = 10) -> None:
+    for attempt in range(attempts):
+        try:
+            src.rename(dst)
+            return
+        except PermissionError:
+            if attempt == attempts - 1:
+                raise
+            time.sleep(0.5)
 
 
 def _project_root(repo: GitHubRepo, dest: Path) -> Path:
@@ -148,7 +171,7 @@ def fetch_github(url: str, ref: str = "", subdir: str = "", token: str = "",
             _download(repo, token, dest)
             return _project_root(repo, dest), repo.name, False
         except SourceError as e:
-            if not cached:
+            if not (dest / COMPLETE_MARKER).exists():
                 raise
             stamp = (dest / COMPLETE_MARKER).read_text(encoding="utf-8").splitlines()[-1]
             return _project_root(repo, dest), f"{repo.name} (cached copy from {stamp}; download failed: {e})", True

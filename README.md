@@ -27,6 +27,9 @@ with **its own test suite**, then compares the results input by input in a Strea
 
 The sidebar is pre-filled with the bundled sample. Click **▶️ Run tests**.
 
+**Streamlit Community Cloud:** `packages.txt` installs a JDK (`default-jdk-headless`) on deploy, since
+the cloud image has only Python. The JUnit launcher is downloaded into `lib/` on the first run.
+
 ## How same-input testing works
 
 * **Input cases** live in a shared CSV file (`sample/inputs/pacs008.csv`). Each row is one case: a unique
@@ -57,9 +60,9 @@ names the edge case it targets (JUnit ignores extra trailing columns):
 | Security | DOCTYPE with an external entity (XXE) is refused |
 | State | duplicate InstrId, duplicate MsgId, exact resend, two payments in one DB |
 
-The **Input cases** page in the app's left panel lists every case with its inputs, the expected result
-and, after a run, both sides' actual outputs; it also shows each pacs.008 message and its diff against
-the valid baseline. New pacs.008 messages are generated with `python tools/generate_pacs008_inputs.py`.
+The **Input files** page opens any input file picked in the left panel. The case file lists every case
+with its inputs, the expected result and, after a run, both sides' actual outputs. A pacs.008 message
+is shown with plain field names, the cases that send it, and its diff against the valid baseline. New pacs.008 messages are generated with `python tools/generate_pacs008_inputs.py`.
 
 ## pacs.008 sample (CBPR+ SR2025)
 
@@ -155,7 +158,8 @@ or keep one modern JDK and set `javac --release 8` for legacy (the sample does t
 ```
 app.py                      Streamlit entry point (navigation)
 app_pages/comparison.py     Comparison page: run both sides and compare
-app_pages/input_cases.py    Input cases page: every input fed to both sides
+app_pages/input_files.py    Input files page: open any input file from the left panel in a readable view
+comparator/input_files.py   read CSV cases and flatten pacs.008 XML into plain-named fields
 tools/                      generate_pacs008_inputs.py (edge-case message generator)
 comparator/source.py        get a side's code from GitHub, with cache and prebuilt fallback
 comparator/java_runner.py   build + run one side, parse JUnit XML and recorded outputs

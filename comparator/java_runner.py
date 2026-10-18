@@ -13,6 +13,7 @@ from __future__ import annotations
 import os
 import shutil
 import subprocess
+import threading
 import time
 import urllib.request
 import xml.etree.ElementTree as ET
@@ -132,13 +133,17 @@ def _run(cmd: list[str], cfg: ProjectConfig, log: list[str], cwd: Path | None = 
     return proc.returncode
 
 
+_JUNIT_LOCK = threading.Lock()  # both sides run in parallel and must not download the jar twice
+
+
 def ensure_junit_jar() -> Path:
     jar = LIB_DIR / JUNIT_JAR_NAME
-    if not jar.exists():
-        LIB_DIR.mkdir(parents=True, exist_ok=True)
-        tmp = jar.with_suffix(".part")
-        urllib.request.urlretrieve(JUNIT_JAR_URL, tmp)
-        tmp.replace(jar)
+    with _JUNIT_LOCK:
+        if not jar.exists():
+            LIB_DIR.mkdir(parents=True, exist_ok=True)
+            tmp = jar.with_name(f"{jar.stem}.{os.getpid()}.part")
+            urllib.request.urlretrieve(JUNIT_JAR_URL, tmp)
+            tmp.replace(jar)
     return jar
 
 

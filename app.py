@@ -9,6 +9,6 @@ st.set_page_config(page_title="DiffLens", page_icon=":material/search_insights:"
 
 page = st.navigation([
     st.Page("app_pages/comparison.py", title="Comparison", icon=":material/compare_arrows:", default=True),
-    st.Page("app_pages/input_cases.py", title="Input cases", icon=":material/dataset:"),
+    st.Page("app_pages/input_files.py", title="Input files", icon=":material/folder_open:"),
 ])
 page.run()
