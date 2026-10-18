@@ -12,7 +12,7 @@ import streamlit as st
 
 from comparator.compare import (
     CATEGORY_LABELS, CHANGED, FIXED, ONLY_LEGACY, ONLY_NEWGEN, OUTPUT_DIFF, REGRESSION, SAME, Comparison,
-    category_counts, compare,
+    category_counts, compare, difference_causes,
 )
 from comparator.java_runner import ProjectConfig, RunResult, run_suite
 from comparator.source import CACHED, FALLBACK, GITHUB, SourceResult, resolve_source
@@ -183,6 +183,7 @@ if run_clicked:
             legacy_result, newgen_result = pool.map(run_suite, configs)
     st.session_state.sources = sources
     st.session_state.results = {"legacy": legacy_result, "newgen": newgen_result}
+    st.session_state.comparison = compare(legacy_result, newgen_result)  # once per run, not on every rerun
 
 
 # ---------------------------------------------------------------- results
@@ -270,10 +271,15 @@ for r in (legacy, newgen):
         st.error(f"Stopped at stage `{r.stage}`: {r.error}", title=f"{r.label} did not run",
                  icon=":material/error:")
 
-rows = compare(legacy, newgen)
+rows: list[Comparison] = st.session_state.get("comparison") or compare(legacy, newgen)
 counts = category_counts(rows)
 lc, nc = legacy.counts(), newgen.counts()
 diff_total = len(rows) - counts[SAME]
+
+
+def bulk_note(c: dict[str, int]) -> str:
+    """Bulk cases assert nothing, so they are left out of pass/fail and only mentioned."""
+    return f" · +{c['bulk']} bulk compared" if c.get("bulk") else ""
 
 
 def pass_rate(c: dict[str, int]) -> float:
@@ -309,11 +315,11 @@ c1, c2, c3 = st.columns(3)
 with c1:
     donut_card("Legacy", ":material/history:", donut(lc, STATUS_SLICES, f"{pass_rate(lc):.0f}%", "pass rate"),
                "Legacy test outcomes",
-               f"{lc['passed']} of {lc['total']} passed · run time {legacy.duration:.1f}s")
+               f"{lc['passed']} of {lc['total']} passed{bulk_note(lc)} · run time {legacy.duration:.1f}s")
 with c2:
     donut_card("New gen", ":material/rocket_launch:",
                donut(nc, STATUS_SLICES, f"{pass_rate(nc):.0f}%", "pass rate"), "New-gen test outcomes",
-               f"{nc['passed']} of {nc['total']} passed · run time {newgen.duration:.1f}s")
+               f"{nc['passed']} of {nc['total']} passed{bulk_note(nc)} · run time {newgen.duration:.1f}s")
 with c3:
     donut_card("Comparison", ":material/compare_arrows:",
                donut(counts, CATEGORY_SLICES, str(diff_total), "differ" if diff_total != 1 else "differs"),
@@ -357,8 +363,8 @@ def show_table(df: pd.DataFrame) -> None:
     )
 
 
-tab_diff, tab_all, tab_detail, tab_logs = st.tabs([
-    ":material/difference: Differences", ":material/table_rows: All tests",
+tab_diff, tab_causes, tab_all, tab_detail, tab_logs = st.tabs([
+    ":material/difference: Differences", ":material/troubleshoot: Root causes", ":material/table_rows: All tests",
     ":material/search: Failure details", ":material/terminal: Build logs"])
 
 with tab_diff:
@@ -367,6 +373,25 @@ with tab_diff:
         show_table(to_frame(diffs))
     else:
         st.success("No differences between the two runs.")
+
+with tab_causes:
+    causes = difference_causes(rows)
+    if not causes:
+        st.success("No output differences to explain.", icon=":material/check_circle:")
+    else:
+        st.caption("Each row is a word (for pacs.008, a result or rule code) that only one side's output contains, "
+                   "with every differing case it explains. A few rows usually explain hundreds of bulk "
+                   "differences; a case can appear under more than one row.")
+        st.dataframe(pd.DataFrame([{
+            "Output word": c.token,
+            "Only in": c.side,
+            "Cases": len(c.cases),
+            "Categories": ", ".join(CATEGORY_LABELS[k] for k in CATEGORY_LABELS
+                                    if any(r.category == k for r in c.cases)),
+            "Example cases": ", ".join((r.legacy or r.newgen).case_id or r.display_name for r in c.cases[:5]),
+        } for c in causes]), hide_index=True, width="stretch", alt="Root causes of the output differences",
+            column_config={"Cases": st.column_config.ProgressColumn(
+                format="%d", min_value=0, max_value=max(len(c.cases) for c in causes))})
 
 with tab_all:
     f1, f2 = st.columns([2, 3])

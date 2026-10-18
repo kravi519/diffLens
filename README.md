@@ -47,10 +47,10 @@ the cloud image has only Python. The JUnit launcher is downloaded into `lib/` on
 
 To add a case, add a row to the CSV file. Both suites pick it up on the next run.
 
-### Bulk edge-case testing
+### Hand-written edge cases
 
-The sample ships **54 pacs.008 input cases**, each row ending in a `description` column that
-names the edge case it targets (JUnit ignores extra trailing columns):
+`sample/inputs/pacs008.csv` has **54 pacs.008 cases**, each with an exact expected result and a
+`description` column that names the edge case it targets (JUnit ignores extra trailing columns):
 
 | Kind of edge case | Examples |
 |---|---|
@@ -60,9 +60,56 @@ names the edge case it targets (JUnit ignores extra trailing columns):
 | Security | DOCTYPE with an external entity (XXE) is refused |
 | State | duplicate InstrId, duplicate MsgId, exact resend, two payments in one DB |
 
-The **Input files** page opens any input file picked in the left panel. The case file lists every case
-with its inputs, the expected result and, after a run, both sides' actual outputs. A pacs.008 message
-is shown with plain field names, the cases that send it, and its diff against the valid baseline. New pacs.008 messages are generated with `python tools/generate_pacs008_inputs.py`.
+New hand-written messages are generated with `python tools/generate_pacs008_inputs.py`.
+
+### Bulk testing
+
+`sample/inputs/pacs008_bulk.csv` adds **500 generated cases** (`B-0001` ...) whose messages are in
+`sample/inputs/pacs008/bulk/`. Regenerate them, or change the size, with:
+
+```bash
+python tools/generate_bulk_inputs.py --count 500 --seed 2026
+```
+
+**How the cases are chosen.** Every message starts from the valid baseline and takes one value from each
+of 10 dimensions (currency, amount, InstrId, settlement method, charges, BIC, debtor, creditor address,
+remittance, UETR): 6,048,000 possible combinations. The generator first builds a **pairwise** set, 68
+cases in which every pair of values from any two dimensions appears together at least once. Most
+interaction bugs need only two fields to line up, so this finds them at a tiny fraction of the full cross
+product. Seeded **random** combinations then fill up to `--count` to reach three-way interactions.
+The same count and seed always produce the same files.
+
+**How they are checked: differential testing.** Bulk cases have no expected result (the column is
+empty). Each suite's `bulk` test method only records what the code returned, and DiffLens flags every
+case where legacy and new gen return different output. You never have to work out 500 correct
+answers: the legacy system is the reference. Test methods named `bulk...` are treated as compare-only,
+so they are left out of the pass rates and reported as "+500 bulk compared".
+
+**How to read the result.** Hundreds of differences usually share a few causes. The **Root causes** tab
+compares the two outputs word by word and groups the cases by the words only one side produced. For the
+sample, 331 differing bulk cases come down to three rule codes: R49 and INSTRID (new gen's stricter
+SR2025 and CBL rules) and R17 (the deliberate migration bug).
+
+**Performance.** 554 cases run as fast as the original 54 did, because:
+
+* compiled classes are reused while the sources, javac settings and classpath are unchanged (compiling
+  was half of every run);
+* the GitHub download is skipped when the branch still points at the commit already downloaded;
+* the test JVMs start with `-XX:TieredStopAtLevel=1 -XX:+UseSerialGC`, which suits short runs;
+* the console prints a summary, not one line per test (per-test results are read from the XML report);
+* the comparison is computed once per run, not on every page interaction.
+
+| Run (both sides in parallel) | 54 cases, before | 554 cases, now |
+|---|---|---|
+| First run (compile) | 3.8 s | 3.6 s |
+| Repeat run (sources unchanged) | 3.8 s | 1.9 s |
+
+### Browsing inputs
+
+The **Input files** page opens any input file picked in the left panel (*Test cases*, *Messages* or
+*Bulk*). A case file lists every case with its inputs, the expected result and, after a run, both
+sides' actual outputs. A pacs.008 message is shown with plain field names, the cases that send it, and
+its diff against the valid baseline.
 
 ## pacs.008 sample (CBPR+ SR2025)
 
@@ -160,12 +207,14 @@ app.py                      Streamlit entry point (navigation)
 app_pages/comparison.py     Comparison page: run both sides and compare
 app_pages/input_files.py    Input files page: open any input file from the left panel in a readable view
 comparator/input_files.py   read CSV cases and flatten pacs.008 XML into plain-named fields
-tools/                      generate_pacs008_inputs.py (edge-case message generator)
+tools/                      generate_pacs008_inputs.py (hand-written edge cases),
+                            generate_bulk_inputs.py (pairwise + random bulk cases)
 comparator/source.py        get a side's code from GitHub, with cache and prebuilt fallback
 comparator/java_runner.py   build + run one side, parse JUnit XML and recorded outputs
 comparator/compare.py       match the runs by input case and classify results
 comparator/agent.py         optional Claude agent (not used by the UI)
-sample/inputs/              shared input cases (pacs008.csv + pacs008/ messages)
+sample/inputs/              shared input cases: pacs008.csv + pacs008/ (hand-written),
+                            pacs008_bulk.csv + pacs008/bulk/ (generated bulk cases)
 sample/legacy/              legacy code (src/main/java) and its own tests (src/test/java); GitHub fallback
 sample/newgen/              new-gen code (src/main/java) and its own tests (src/test/java); GitHub fallback
 ```

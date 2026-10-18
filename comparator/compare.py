@@ -104,6 +104,34 @@ def compare(legacy: RunResult, newgen: RunResult) -> list[Comparison]:
     return rows
 
 
+@dataclass
+class Cause:
+    """One output token that appears on only one side, and every differing case it explains."""
+    token: str
+    side: str  # "new gen" (token only in the new-gen output) or "legacy"
+    cases: list[Comparison]
+
+
+def difference_causes(rows: list[Comparison]) -> list[Cause]:
+    """Group differing cases by the output tokens only one side produced, most cases first.
+
+    Bulk runs can produce hundreds of differences that share a few causes. Comparing the two outputs
+    word by word (for pacs.008: rule codes such as R49 or INSTRID) turns them into a short list, e.g.
+    "INSTRID only in new gen: 194 cases". A case is listed under every token it differs by.
+    """
+    groups: dict[tuple[str, str], list[Comparison]] = {}
+    for r in rows:
+        if r.category == SAME or r.legacy_output is None or r.newgen_output is None:
+            continue
+        legacy, newgen = set(r.legacy_output.split()), set(r.newgen_output.split())
+        for side, tokens in (("new gen", newgen - legacy), ("legacy", legacy - newgen)):
+            for token in tokens:
+                groups.setdefault((token, side), []).append(r)
+    causes = [Cause(token, side, cases) for (token, side), cases in groups.items()]
+    causes.sort(key=lambda c: (-len(c.cases), c.side, c.token))
+    return causes
+
+
 def category_counts(rows: list[Comparison]) -> dict[str, int]:
     counts = {k: 0 for k in CATEGORY_LABELS}
     for r in rows:

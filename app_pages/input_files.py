@@ -19,7 +19,8 @@ from comparator.input_files import column_label, read_csv, show_value, xml_field
 
 ROOT = Path(__file__).resolve().parent.parent  # project root (this page lives in app_pages/)
 INPUTS_DIR = ROOT / "sample" / "inputs"  # the same directory the Comparison page uses
-CASES_CSV = INPUTS_DIR / "pacs008.csv"
+MESSAGES_DIR = INPUTS_DIR / "pacs008"  # the "files" column of a case file is relative to this folder
+BULK_DIR = MESSAGES_DIR / "bulk"
 BASELINE_XML = INPUTS_DIR / "pacs008" / "p8_01_valid.xml"
 NULL_NOTE = "∅ null is an empty field, `\"\"` an empty string."
 
@@ -39,7 +40,8 @@ def last_run_by_case() -> dict:
     results = st.session_state.get("results")
     if not results or len(results) < 2:
         return {}
-    return {row.test_id: row for row in compare(results["legacy"], results["newgen"])}
+    rows = st.session_state.get("comparison") or compare(results["legacy"], results["newgen"])
+    return {row.test_id: row for row in rows}
 
 
 def cases_table(header: list[str], rows: list[list[str | None]], runs: dict) -> pd.DataFrame:
@@ -53,6 +55,9 @@ def cases_table(header: list[str], rows: list[list[str | None]], runs: dict) -> 
         table["Legacy output"] = [m.legacy_output if m else None for m in matched]
         table["New gen output"] = [m.newgen_output if m else None for m in matched]
         order = ["Case", "Result"] + order[1:] + ["Legacy output", "New gen output"]
+    if "expected" in header:  # bulk cases have no expected result: they are only compared between the sides
+        col = header.index("expected")
+        table["Expected"] = [show_value(r[col]) if r[col] is not None else "— compared only" for r in rows]
     return table[order]
 
 
@@ -68,29 +73,44 @@ if not files:
     st.warning(f"No input files found in `{INPUTS_DIR}`.", icon=":material/folder_off:")
     st.stop()
 
-case_header, case_rows = load_csv(str(CASES_CSV), CASES_CSV.stat().st_mtime) if CASES_CSV.exists() else ([], [])
-files_col = case_header.index("files") if "files" in case_header else None
+# Message (relative to pacs008/) -> the cases that send it, from every case file (exact and bulk).
+case_header: list[str] = []
+used_by: dict[str, list[list[str | None]]] = {}
+for csv_file in (f for f in files if f.suffix == ".csv"):
+    header, rows = load_csv(str(csv_file), csv_file.stat().st_mtime)
+    if "files" not in header:
+        continue
+    case_header = case_header or header
+    for row in rows:
+        for name in (row[header.index("files")] or "").split(";"):
+            used_by.setdefault(name.strip(), []).append(row)
 desc_col = case_header.index("description") if "description" in case_header else None
-used_by: dict[str, list[list[str | None]]] = {}  # message file name -> the cases that send it
-for row in case_rows if files_col is not None else []:
-    for name in (row[files_col] or "").split(";"):
-        used_by.setdefault(name.strip(), []).append(row)
 runs = last_run_by_case()
+
+
+def message_key(path: Path) -> str:
+    return path.relative_to(MESSAGES_DIR).as_posix() if path.is_relative_to(MESSAGES_DIR) else path.name
 
 
 def file_label(rel: str) -> str:
     """'pacs008/p8_13_invalid_uetr.xml' -> 'p8_13_invalid_uetr.xml · UETR is not a UUID'."""
-    name = Path(rel).name
-    rows = used_by.get(name) if rel.endswith(".xml") else None
+    path = INPUTS_DIR / rel
+    rows = used_by.get(message_key(path)) if path.suffix == ".xml" else None
     if rows and desc_col is not None and len(rows) == 1 and rows[0][desc_col]:
-        return f"{name} · {rows[0][desc_col]}"
-    return name
+        return f"{path.name} · {rows[0][desc_col]}"
+    return path.name
 
 
+KINDS = {
+    "Test cases": lambda f: f.suffix == ".csv",
+    "Messages": lambda f: f.suffix == ".xml" and not f.is_relative_to(BULK_DIR),
+    "Bulk": lambda f: f.suffix == ".xml" and f.is_relative_to(BULK_DIR),
+}
 st.sidebar.header(":material/folder_open: Input files")
 kind = st.sidebar.segmented_control(
-    "File type", ["Test cases", "Messages"], default="Test cases", key="input_file_kind", width="stretch")
-shown = [f for f in files if (f.suffix == ".csv") == (kind != "Messages")] or files
+    "File type", list(KINDS), default="Test cases", key="input_file_kind", width="stretch",
+    help="Bulk: generated messages that vary many fields at once (tools/generate_bulk_inputs.py).")
+shown = [f for f in files if KINDS.get(kind or "Test cases")(f)] or files
 rel_paths = [f.relative_to(INPUTS_DIR).as_posix() for f in shown]
 selected = st.sidebar.selectbox(
     "Open file", rel_paths, format_func=file_label, key="input_file",
@@ -116,13 +136,18 @@ if path.suffix == ".csv":
     elif not header:
         st.info("This file is empty.", icon=":material/draft:")
     else:
-        st.caption("Every row is fed to both the legacy and the new-gen test suite, so a difference in their "
-                   "results is a difference in behaviour.")
+        bulk = "expected" in header and all(r[header.index("expected")] is None for r in rows)
+        st.caption("Generated bulk cases: none has an expected result, so each one only checks that legacy and "
+                   "new gen return the same output. Regenerate with `python tools/generate_bulk_inputs.py`."
+                   if bulk else "Every row is fed to both the legacy and the new-gen test suite, so a difference "
+                   "in their results is a difference in behaviour.")
         table = cases_table(header, rows, runs)
-        differs = table["Result"] != CATEGORY_LABELS["same"] if runs else None
+        differs = ~table["Result"].isin([CATEGORY_LABELS["same"], "— not run"]) if runs else None
+        messages = {name.strip() for r in rows if "files" in header
+                    for name in (r[header.index("files")] or "").split(";")}
         k1, k2, k3 = st.columns(3)
         k1.metric("Input cases", len(rows), border=True)
-        k2.metric("pacs.008 messages", sum(f.suffix == ".xml" for f in files), border=True)
+        k2.metric("pacs.008 messages", len(messages), border=True)
         k3.metric("Last run", f"{differs.sum()} differ" if runs else "Not run yet", border=True)
         if runs and st.toggle("Only show cases whose result differs between legacy and new gen"):
             table = table[differs]
@@ -132,9 +157,9 @@ if path.suffix == ".csv":
             st.success("Every case behaves the same on both sides.", icon=":material/check_circle:")
         else:
             show_cases(table, f"Input cases in {path.name}")
-        st.caption(f"{NULL_NOTE} Open a message under **Messages** in the left panel to read it.")
+        st.caption(f"{NULL_NOTE} Open a message under **Messages** or **Bulk** in the left panel to read it.")
 else:
-    cases = used_by.get(path.name, [])
+    cases = used_by.get(message_key(path), [])
     if cases:
         with st.container(border=True):
             st.markdown(f":material/dataset: **Used by {len(cases)} test case{'s' if len(cases) > 1 else ''}**")

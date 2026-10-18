@@ -23,7 +23,21 @@ class Pacs008ControllerTest {
     @ParameterizedTest(name = "{arguments}")
     @CsvFileSource(resources = "/pacs008.csv", numLinesToSkip = 1)
     void submitPacs008(final String caseId, final String files, String expected) {
-        assertEquals(expected, Recorder.capture(caseId, new Recorder.Call() {
+        assertEquals(expected, post(caseId, files));
+    }
+
+    /** Bulk cases have no expected result: the output is only recorded and compared with new gen. */
+    @ParameterizedTest(name = "{arguments}")
+    @CsvFileSource(resources = "/pacs008_bulk.csv", numLinesToSkip = 1)
+    void bulkPacs008(final String caseId, final String files, String expected) {
+        String actual = post(caseId, files);
+        if (expected != null) {
+            assertEquals(expected, actual);
+        }
+    }
+
+    private static String post(String caseId, final String files) {
+        return Recorder.capture(caseId, new Recorder.Call() {
             public Object run() throws Exception {
                 Pacs008Controller controller = new Pacs008Controller(
                         new Pacs008Service(new InMemoryPaymentRepository()), new TextPaymentView());
@@ -33,7 +47,7 @@ class Pacs008ControllerTest {
                 }
                 return response;
             }
-        }));
+        });
     }
 
     private static String resource(String name) throws IOException {

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BusMsg>
+  <AppHdr xmlns="urn:iso:std:iso:20022:tech:xsd:head.001.001.02">
+    <Fr><FIId><FinInstnId><BICFI>BANKDEFF</BICFI></FinInstnId></FIId></Fr>
+    <To><FIId><FinInstnId><BICFI>CEDELULLXXX</BICFI></FinInstnId></FIId></To>
+    <BizMsgIdr>MSG-0001</BizMsgIdr>
+    <MsgDefIdr>pacs.008.001.08</MsgDefIdr>
+    <BizSvc>swift.cbprplus.03</BizSvc>
+    <CreDt>2026-01-26T10:00:00+01:00</CreDt>
+  </AppHdr>
+  <Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08">
+    <FIToFICstmrCdtTrf>
+      <GrpHdr>
+        <MsgId>MSG-0001</MsgId>
+        <CreDtTm>2026-01-26T10:00:00+01:00</CreDtTm>
+        <NbOfTxs>1</NbOfTxs>
+        <SttlmInf>
+          <SttlmMtd>INGA</SttlmMtd>
+          <SttlmAcct><Id><Othr><Id>12345</Id></Othr></Id></SttlmAcct>
+        </SttlmInf>
+      </GrpHdr>
+      <CdtTrfTxInf>
+        <PmtId>
+          <InstrId>INSTR-0001-ABCDE</InstrId>
+          <EndToEndId>E2E-0001</EndToEndId>
+          <UETR>not-a-valid-uetr</UETR>
+        </PmtId>
+        <IntrBkSttlmAmt Ccy="XAU">-5.00</IntrBkSttlmAmt>
+        <IntrBkSttlmDt>2026-01-27</IntrBkSttlmDt>
+        <ChrgBr>SHAR</ChrgBr>
+        <InstgAgt><FinInstnId><BICFI>BANKDEFF</BICFI></FinInstnId></InstgAgt>
+        <InstdAgt><FinInstnId><BICFI>CEDELULLXXX</BICFI></FinInstnId></InstdAgt>
+        <Dbtr><Nm>Acme GmbH</Nm><Id><OrgId><AnyBIC>ACMEDEFFXXX</AnyBIC></OrgId></Id><PstlAdr><StrtNm>Hauptstrasse</StrtNm><BldgNb>1</BldgNb><PstCd>60311</PstCd><TwnNm>Frankfurt</TwnNm><Ctry>DE</Ctry></PstlAdr></Dbtr>
+        <DbtrAcct><Id><IBAN>DE89370400440532013000</IBAN></Id></DbtrAcct>
+        <DbtrAgt><FinInstnId><BICFI>BANKDEFF</BICFI></FinInstnId></DbtrAgt>
+        <CdtrAgt><FinInstnId><BICFI>BNPAFRPPXXX</BICFI></FinInstnId></CdtrAgt>
+        <Cdtr><Nm>Globex SA</Nm><PstlAdr><StrtNm>Rue de Rivoli</StrtNm><BldgNb>12</BldgNb><PstCd>75001</PstCd><TwnNm>Paris</TwnNm><Ctry>FR</Ctry></PstlAdr></Cdtr>
+        <CdtrAcct><Id><IBAN>FR7630006000011234567890189</IBAN></Id></CdtrAcct>
+        <RmtInf><Ustrd>RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR</Ustrd></RmtInf>
+      </CdtTrfTxInf>
+    </FIToFICstmrCdtTrf>
+  </Document>
+</BusMsg>

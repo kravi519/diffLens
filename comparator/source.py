@@ -88,13 +88,37 @@ def parse_github_url(url: str, ref: str = "", subdir: str = "") -> GitHubRepo:
     )
 
 
-def _download(repo: GitHubRepo, token: str, dest: Path) -> None:
-    url = f"{API_URL}/repos/{repo.owner}/{repo.repo}/zipball"
-    if repo.ref:
-        url += "/" + urllib.parse.quote(repo.ref, safe="")
-    headers = {"Accept": "application/vnd.github+json", "User-Agent": "DiffLens"}
+def _headers(token: str, accept: str = "application/vnd.github+json") -> dict[str, str]:
+    headers = {"Accept": accept, "User-Agent": "DiffLens"}
     if token:
         headers["Authorization"] = f"Bearer {token}"
+    return headers
+
+
+def _latest_commit(repo: GitHubRepo, token: str) -> str | None:
+    """Commit id the branch/tag points at now (one small API call), or None if it cannot be read."""
+    url = f"{API_URL}/repos/{repo.owner}/{repo.repo}/commits/{urllib.parse.quote(repo.ref or 'HEAD', safe='')}"
+    try:
+        request = urllib.request.Request(url, headers=_headers(token, "application/vnd.github.sha"))
+        with urllib.request.urlopen(request, timeout=TIMEOUT) as resp:
+            sha = resp.read().decode("ascii", "replace").strip()
+    except (urllib.error.URLError, TimeoutError, OSError):
+        return None
+    return sha if re.fullmatch(r"[0-9a-f]{40}", sha) else None
+
+
+def _cached_commit(dest: Path) -> str | None:
+    """Commit id stored with the cached copy (marker lines: name, commit, timestamp)."""
+    lines = (dest / COMPLETE_MARKER).read_text(encoding="utf-8").splitlines()
+    return lines[1] or None if len(lines) == 3 else None
+
+
+def _download(repo: GitHubRepo, token: str, dest: Path, commit: str | None = None) -> None:
+    url = f"{API_URL}/repos/{repo.owner}/{repo.repo}/zipball"
+    # Download exactly the commit that was checked, so the cached copy and its stored id always agree.
+    if commit or repo.ref:
+        url += "/" + urllib.parse.quote(commit or repo.ref, safe="")
+    headers = _headers(token)
     try:
         with urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=TIMEOUT) as resp:
             data = resp.read()
@@ -120,7 +144,8 @@ def _download(repo: GitHubRepo, token: str, dest: Path) -> None:
             archive.extractall(tmp)
     except zipfile.BadZipFile as e:
         raise SourceError("GitHub did not return a valid zip archive") from e
-    (tmp / COMPLETE_MARKER).write_text(f"{repo.name}\n{datetime.now():%Y-%m-%d %H:%M}\n", encoding="utf-8")
+    (tmp / COMPLETE_MARKER).write_text(f"{repo.name}\n{commit or ''}\n{datetime.now():%Y-%m-%d %H:%M}\n",
+                                       encoding="utf-8")
     # Swap by renaming, never by deleting first: on Windows a virus scanner or indexer can briefly lock
     # freshly extracted files, and the old copy must survive a failed swap.
     old = dest.with_name(dest.name + ".old")
@@ -167,8 +192,12 @@ def fetch_github(url: str, ref: str = "", subdir: str = "", token: str = "",
     dest = REPO_CACHE / f"{repo.owner}-{repo.repo}-{key}"
     cached = (dest / COMPLETE_MARKER).exists()
     if refresh or not cached:
+        commit = _latest_commit(repo, token)
+        if cached and commit and commit == _cached_commit(dest):
+            # Already have this exact commit: skip the download and unzip.
+            return _project_root(repo, dest), f"{repo.name} (latest commit {commit[:7]}, already downloaded)", False
         try:
-            _download(repo, token, dest)
+            _download(repo, token, dest, commit)
             return _project_root(repo, dest), repo.name, False
         except SourceError as e:
             if not (dest / COMPLETE_MARKER).exists():

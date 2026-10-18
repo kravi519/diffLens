@@ -1,0 +1,501 @@
+case,files,expected,description
+B-0001,bulk/B0001.xml,,pairwise: settlement INGA · debtor no name or BIC · creditor address no town
+B-0002,bulk/B0002.xml,,pairwise: amount 0.01 · instrId 16 chars · settlement CLRG · charges DEBT 1 charge · bic lowercase BIC · debtor AnyBIC only · creditor address full structured · remittance 141 chars · uetr version 1
+B-0003,bulk/B0003.xml,,pairwise: amount 0.00 · instrId 35 chars · charges DEBT 2 charges · bic BIC8 · remittance structured and related · uetr not a UUID
+B-0004,bulk/B0004.xml,,pairwise: amount -5.00 · instrId 17 chars · charges DEBT no charge · debtor name and AnyBIC · creditor address address lines only · remittance 140 chars · uetr uppercase
+B-0005,bulk/B0005.xml,,pairwise: amount 5 decimals · instrId slashes · settlement INGA · charges CRED no charge · bic lowercase BIC · creditor address hybrid · remittance none · uetr uppercase
+B-0006,bulk/B0006.xml,,pairwise: amount 6 decimals · instrId trailing slash · settlement CLRG · charges CRED 1 charge · bic BIC8 · debtor name and AnyBIC · creditor address hybrid · uetr not a UUID
+B-0007,bulk/B0007.xml,,pairwise: amount 14 digits · instrId slashes · settlement CLRG · charges SLEV · debtor no name or BIC · creditor address address lines only · remittance structured and related · uetr version 1
+B-0008,bulk/B0008.xml,,pairwise: amount 15 digits · instrId trailing slash · charges SLEV · bic lowercase BIC · debtor AnyBIC only · creditor address no town · remittance none
+B-0009,bulk/B0009.xml,,pairwise: currency USD · instrId 16 chars · charges CRED no charge · bic BIC8 · debtor no name or BIC · creditor address full structured · remittance 140 chars · uetr not a UUID
+B-0010,bulk/B0010.xml,,pairwise: currency USD · amount 0.01 · instrId 35 chars · settlement INGA · charges CRED 1 charge · creditor address address lines only · remittance 141 chars
+B-0011,bulk/B0011.xml,,pairwise: currency USD · amount 0.00 · settlement CLRG · bic lowercase BIC · debtor name and AnyBIC · remittance none · uetr version 1
+B-0012,bulk/B0012.xml,,pairwise: currency USD · amount -5.00 · instrId 17 chars · settlement INGA · charges DEBT 1 charge · bic BIC8 · debtor AnyBIC only · creditor address hybrid · remittance structured and related
+B-0013,bulk/B0013.xml,,pairwise: currency USD · amount 5 decimals · instrId 17 chars · settlement CLRG · charges DEBT no charge · bic BIC8 · creditor address no town · uetr version 1
+B-0014,bulk/B0014.xml,,pairwise: currency USD · amount 6 decimals · instrId trailing slash · settlement INGA · charges DEBT 2 charges · debtor no name or BIC · remittance 141 chars · uetr uppercase
+B-0015,bulk/B0015.xml,,pairwise: currency USD · amount 14 digits · instrId slashes · charges DEBT 1 charge · bic BIC8 · debtor name and AnyBIC · creditor address no town · remittance 141 chars · uetr not a UUID
+B-0016,bulk/B0016.xml,,pairwise: currency USD · amount 15 digits · instrId 16 chars · settlement INGA · charges SLEV · debtor name and AnyBIC · creditor address full structured · uetr uppercase
+B-0017,bulk/B0017.xml,,pairwise: currency JPY · instrId 35 chars · settlement CLRG · charges DEBT 2 charges · bic lowercase BIC · debtor AnyBIC only · creditor address hybrid · remittance 140 chars · uetr version 1
+B-0018,bulk/B0018.xml,,pairwise: currency JPY · amount 0.01 · bic BIC8 · creditor address full structured · remittance structured and related · uetr uppercase
+B-0019,bulk/B0019.xml,,pairwise: currency JPY · amount 0.00 · instrId slashes · settlement CLRG · charges CRED no charge · debtor AnyBIC only
+B-0020,bulk/B0020.xml,,pairwise: currency JPY · amount -5.00 · instrId 17 chars · settlement INGA · charges DEBT no charge · bic lowercase BIC · debtor no name or BIC · creditor address address lines only · remittance none · uetr not a UUID
+B-0021,bulk/B0021.xml,,pairwise: currency JPY · amount 5 decimals · instrId 16 chars · charges CRED 1 charge · bic lowercase BIC · debtor name and AnyBIC · creditor address no town · remittance structured and related
+B-0022,bulk/B0022.xml,,pairwise: currency JPY · amount 6 decimals · instrId trailing slash · charges DEBT 1 charge · bic lowercase BIC · creditor address address lines only · uetr version 1
+B-0023,bulk/B0023.xml,,pairwise: currency JPY · amount 14 digits · settlement INGA · charges DEBT no charge · bic lowercase BIC · debtor AnyBIC only · creditor address hybrid · remittance 140 chars
+B-0024,bulk/B0024.xml,,pairwise: currency JPY · amount 15 digits · settlement CLRG · charges SLEV · bic BIC8 · debtor no name or BIC · creditor address hybrid · remittance 141 chars · uetr not a UUID
+B-0025,bulk/B0025.xml,,pairwise: currency XAU commodity · instrId 35 chars · settlement CLRG · charges DEBT 1 charge · debtor no name or BIC · remittance none · uetr uppercase
+B-0026,bulk/B0026.xml,,pairwise: currency XAU commodity · amount 0.01 · instrId trailing slash · debtor AnyBIC only · creditor address hybrid · remittance 140 chars · uetr not a UUID
+B-0027,bulk/B0027.xml,,pairwise: currency XAU commodity · amount 0.00 · instrId 17 chars · settlement INGA · charges CRED 1 charge · bic BIC8 · debtor no name or BIC · creditor address full structured · remittance none · uetr version 1
+B-0028,bulk/B0028.xml,,pairwise: currency XAU commodity · amount -5.00 · instrId 16 chars · settlement CLRG · charges DEBT 2 charges · bic lowercase BIC · creditor address address lines only
+B-0029,bulk/B0029.xml,,pairwise: currency XAU commodity · amount 5 decimals · charges CRED no charge · bic BIC8 · debtor name and AnyBIC · creditor address address lines only · remittance 141 chars · uetr not a UUID
+B-0030,bulk/B0030.xml,,pairwise: currency XAU commodity · amount 6 decimals · instrId slashes · settlement CLRG · charges DEBT no charge · bic BIC8 · debtor AnyBIC only · creditor address full structured · remittance structured and related
+B-0031,bulk/B0031.xml,,pairwise: currency XAU commodity · amount 14 digits · instrId 17 chars · charges SLEV · remittance 140 chars · uetr uppercase
+B-0032,bulk/B0032.xml,,pairwise: currency XAU commodity · amount 15 digits · instrId slashes · settlement INGA · charges CRED 1 charge · bic lowercase BIC · debtor AnyBIC only · creditor address no town · remittance 140 chars · uetr uppercase
+B-0033,bulk/B0033.xml,,pairwise: currency lowercase eur · instrId 17 chars · bic lowercase BIC · creditor address address lines only · remittance 141 chars · uetr uppercase
+B-0034,bulk/B0034.xml,,pairwise: currency lowercase eur · amount 0.01 · instrId 35 chars · settlement INGA · charges CRED no charge · bic BIC8 · debtor name and AnyBIC · creditor address no town · uetr version 1
+B-0035,bulk/B0035.xml,,pairwise: currency lowercase eur · amount 0.00 · instrId 16 chars · settlement CLRG · charges DEBT 1 charge · debtor AnyBIC only · creditor address hybrid · remittance 140 chars · uetr not a UUID
+B-0036,bulk/B0036.xml,,pairwise: currency lowercase eur · amount -5.00 · instrId trailing slash · charges CRED no charge · debtor no name or BIC · creditor address full structured · remittance structured and related
+B-0037,bulk/B0037.xml,,pairwise: currency lowercase eur · amount 5 decimals · instrId 16 chars · settlement CLRG · charges DEBT no charge · debtor no name or BIC · remittance none · uetr not a UUID
+B-0038,bulk/B0038.xml,,pairwise: currency lowercase eur · amount 6 decimals · settlement INGA · charges DEBT 2 charges · debtor name and AnyBIC · creditor address no town · remittance none · uetr version 1
+B-0039,bulk/B0039.xml,,pairwise: currency lowercase eur · amount 14 digits · instrId 35 chars · charges SLEV · bic lowercase BIC · creditor address full structured · remittance none
+B-0040,bulk/B0040.xml,,pairwise: currency lowercase eur · amount 15 digits · instrId 35 chars · settlement INGA · bic lowercase BIC · remittance structured and related · uetr version 1
+B-0041,bulk/B0041.xml,,pairwise: currency lowercase eur · amount -5.00 · instrId slashes · settlement CLRG · charges CRED 1 charge · remittance 141 chars · uetr version 1
+B-0042,bulk/B0042.xml,,pairwise: currency lowercase eur · instrId slashes · charges DEBT 2 charges · bic lowercase BIC · debtor name and AnyBIC · creditor address full structured · remittance structured and related · uetr not a UUID
+B-0043,bulk/B0043.xml,,pairwise: currency XAU commodity · instrId trailing slash · settlement INGA · charges DEBT no charge · bic BIC8 · debtor AnyBIC only · creditor address address lines only · remittance 141 chars · uetr version 1
+B-0044,bulk/B0044.xml,,pairwise: instrId trailing slash · settlement CLRG · charges SLEV · bic BIC8 · debtor no name or BIC · creditor address full structured · remittance 141 chars · uetr uppercase
+B-0045,bulk/B0045.xml,,pairwise: currency JPY · settlement INGA · charges CRED 1 charge · bic BIC8 · debtor no name or BIC · remittance none
+B-0046,bulk/B0046.xml,,pairwise: currency JPY · amount 0.01 · instrId 17 chars · settlement INGA · charges DEBT 2 charges · bic BIC8 · debtor no name or BIC · remittance none · uetr version 1
+B-0047,bulk/B0047.xml,,pairwise: currency XAU commodity · amount 0.01 · instrId slashes · settlement CLRG · charges DEBT no charge · bic BIC8 · debtor no name or BIC · creditor address full structured · remittance 141 chars · uetr not a UUID
+B-0048,bulk/B0048.xml,,pairwise: currency USD · amount 0.01 · charges SLEV · bic lowercase BIC · debtor no name or BIC · creditor address no town · remittance 141 chars · uetr version 1
+B-0049,bulk/B0049.xml,,pairwise: currency lowercase eur · amount 0.00 · instrId trailing slash · charges SLEV · creditor address no town · remittance 141 chars · uetr uppercase
+B-0050,bulk/B0050.xml,,pairwise: currency USD · amount 0.00 · instrId 35 chars · settlement CLRG · charges DEBT no charge · bic BIC8 · debtor no name or BIC · creditor address address lines only · remittance 140 chars · uetr uppercase
+B-0051,bulk/B0051.xml,,pairwise: currency USD · amount -5.00 · settlement CLRG · charges SLEV · bic BIC8 · debtor name and AnyBIC · creditor address no town · remittance 140 chars · uetr version 1
+B-0052,bulk/B0052.xml,,pairwise: currency JPY · amount -5.00 · instrId 35 chars · settlement INGA · debtor name and AnyBIC · creditor address hybrid · remittance 140 chars
+B-0053,bulk/B0053.xml,,pairwise: currency JPY · amount 5 decimals · instrId 35 chars · charges DEBT 2 charges · bic lowercase BIC · debtor AnyBIC only · creditor address full structured · remittance 140 chars · uetr not a UUID
+B-0054,bulk/B0054.xml,,pairwise: amount 5 decimals · instrId trailing slash · settlement CLRG · bic lowercase BIC · remittance structured and related · uetr version 1
+B-0055,bulk/B0055.xml,,pairwise: currency XAU commodity · amount 5 decimals · instrId 17 chars · settlement INGA · charges SLEV · bic lowercase BIC · debtor name and AnyBIC · creditor address hybrid · remittance none · uetr uppercase
+B-0056,bulk/B0056.xml,,pairwise: currency XAU commodity · amount 5 decimals · settlement INGA · charges DEBT 1 charge · bic BIC8 · creditor address no town · remittance none · uetr uppercase
+B-0057,bulk/B0057.xml,,pairwise: amount 6 decimals · instrId 16 chars · settlement CLRG · bic lowercase BIC · creditor address no town · remittance 140 chars · uetr not a UUID
+B-0058,bulk/B0058.xml,,pairwise: amount 6 decimals · instrId 17 chars · settlement CLRG · charges CRED no charge · debtor name and AnyBIC · creditor address full structured · remittance 141 chars · uetr version 1
+B-0059,bulk/B0059.xml,,pairwise: currency lowercase eur · amount 6 decimals · instrId 35 chars · settlement CLRG · charges SLEV · debtor AnyBIC only · creditor address address lines only · remittance none · uetr uppercase
+B-0060,bulk/B0060.xml,,pairwise: amount 14 digits · instrId 16 chars · settlement CLRG · charges CRED 1 charge · bic BIC8 · creditor address address lines only · uetr version 1
+B-0061,bulk/B0061.xml,,pairwise: currency JPY · amount 14 digits · instrId trailing slash · settlement CLRG · debtor no name or BIC · creditor address address lines only · remittance 140 chars
+B-0062,bulk/B0062.xml,,pairwise: amount 14 digits · instrId 17 chars · settlement INGA · charges DEBT 2 charges · bic BIC8 · debtor no name or BIC · creditor address address lines only · remittance none · uetr uppercase
+B-0063,bulk/B0063.xml,,pairwise: currency XAU commodity · amount 14 digits · instrId 17 chars · charges CRED no charge · bic lowercase BIC · creditor address no town · remittance none
+B-0064,bulk/B0064.xml,,pairwise: currency USD · amount 15 digits · instrId 17 chars · settlement CLRG · charges CRED no charge · debtor AnyBIC only · creditor address address lines only · remittance 141 chars · uetr not a UUID
+B-0065,bulk/B0065.xml,,pairwise: currency USD · amount 15 digits · instrId 17 chars · settlement CLRG · charges DEBT no charge · debtor no name or BIC · creditor address hybrid · remittance 140 chars · uetr not a UUID
+B-0066,bulk/B0066.xml,,pairwise: currency JPY · amount 15 digits · instrId 16 chars · charges DEBT 1 charge · debtor AnyBIC only · creditor address address lines only · remittance structured and related · uetr version 1
+B-0067,bulk/B0067.xml,,pairwise: currency XAU commodity · amount 15 digits · instrId 16 chars · charges DEBT 2 charges · debtor no name or BIC · creditor address no town · remittance 140 chars · uetr uppercase
+B-0068,bulk/B0068.xml,,pairwise: amount 5 decimals · instrId slashes · settlement INGA · bic BIC8 · debtor name and AnyBIC · creditor address address lines only · remittance none
+B-0069,bulk/B0069.xml,,random: currency lowercase eur · amount 0.00 · instrId trailing slash · charges SLEV · debtor name and AnyBIC · creditor address hybrid · remittance 141 chars · uetr uppercase
+B-0070,bulk/B0070.xml,,random: currency JPY · amount 0.00 · instrId trailing slash · settlement CLRG · charges SLEV · bic BIC8 · debtor no name or BIC · creditor address address lines only
+B-0071,bulk/B0071.xml,,random: currency JPY · amount -5.00 · instrId 17 chars · settlement INGA · charges CRED 1 charge · bic lowercase BIC · debtor AnyBIC only · creditor address no town · remittance none
+B-0072,bulk/B0072.xml,,random: currency USD · amount 0.00 · instrId 16 chars · settlement INGA · charges CRED no charge · debtor name and AnyBIC · creditor address hybrid · remittance none · uetr uppercase
+B-0073,bulk/B0073.xml,,random: currency XAU commodity · amount 15 digits · settlement CLRG · charges DEBT 1 charge · bic BIC8 · debtor name and AnyBIC · creditor address address lines only · remittance structured and related · uetr not a UUID
+B-0074,bulk/B0074.xml,,random: currency JPY · amount 0.01 · instrId slashes · charges DEBT no charge · debtor no name or BIC · creditor address full structured · remittance structured and related
+B-0075,bulk/B0075.xml,,random: amount 5 decimals · instrId 16 chars · bic lowercase BIC · creditor address address lines only · uetr uppercase
+B-0076,bulk/B0076.xml,,random: currency XAU commodity · amount 5 decimals · instrId slashes · charges SLEV · bic lowercase BIC · debtor name and AnyBIC · creditor address no town · remittance none · uetr uppercase
+B-0077,bulk/B0077.xml,,random: amount 6 decimals · instrId 35 chars · settlement INGA · charges CRED 1 charge · creditor address hybrid · remittance none
+B-0078,bulk/B0078.xml,,random: currency XAU commodity · amount 15 digits · instrId 17 chars · settlement INGA · charges CRED no charge · bic lowercase BIC · debtor AnyBIC only · creditor address hybrid · remittance 141 chars
+B-0079,bulk/B0079.xml,,random: currency USD · amount -5.00 · charges CRED no charge · bic BIC8 · creditor address hybrid · remittance 141 chars · uetr version 1
+B-0080,bulk/B0080.xml,,random: currency XAU commodity · amount 5 decimals · instrId slashes · charges SLEV · bic lowercase BIC · debtor no name or BIC · creditor address full structured · remittance 141 chars · uetr version 1
+B-0081,bulk/B0081.xml,,random: currency USD · instrId 35 chars · settlement INGA · charges SLEV · debtor AnyBIC only · creditor address hybrid · remittance 140 chars · uetr uppercase
+B-0082,bulk/B0082.xml,,random: currency lowercase eur · amount 0.00 · settlement CLRG · charges DEBT 1 charge · bic lowercase BIC · remittance 141 chars · uetr not a UUID
+B-0083,bulk/B0083.xml,,random: currency JPY · amount 14 digits · instrId trailing slash · charges DEBT 2 charges · debtor no name or BIC · creditor address address lines only · remittance 141 chars
+B-0084,bulk/B0084.xml,,random: currency lowercase eur · amount 15 digits · instrId 17 chars · charges DEBT no charge · debtor no name or BIC · creditor address hybrid · remittance 140 chars
+B-0085,bulk/B0085.xml,,random: amount -5.00 · instrId slashes · charges CRED no charge · bic BIC8 · debtor name and AnyBIC · creditor address no town · remittance none · uetr not a UUID
+B-0086,bulk/B0086.xml,,random: currency USD · amount 0.01 · settlement INGA · debtor name and AnyBIC · creditor address full structured · remittance structured and related
+B-0087,bulk/B0087.xml,,random: currency lowercase eur · amount 0.01 · instrId 17 chars · settlement CLRG · charges DEBT 1 charge · debtor AnyBIC only · creditor address hybrid · remittance structured and related · uetr version 1
+B-0088,bulk/B0088.xml,,random: currency JPY · amount 0.01 · settlement INGA · charges CRED no charge · bic lowercase BIC · debtor AnyBIC only · creditor address no town · uetr uppercase
+B-0089,bulk/B0089.xml,,random: currency USD · amount 15 digits · instrId 17 chars · settlement INGA · bic BIC8 · debtor AnyBIC only · creditor address address lines only · remittance structured and related · uetr version 1
+B-0090,bulk/B0090.xml,,random: currency JPY · amount -5.00 · instrId 17 chars · settlement INGA · charges DEBT 1 charge · debtor name and AnyBIC · remittance structured and related · uetr not a UUID
+B-0091,bulk/B0091.xml,,random: amount 6 decimals · instrId 17 chars · charges CRED no charge · bic BIC8 · debtor name and AnyBIC · creditor address hybrid · uetr uppercase
+B-0092,bulk/B0092.xml,,random: currency USD · instrId 17 chars · settlement CLRG · charges DEBT no charge · bic BIC8 · debtor AnyBIC only · creditor address no town · remittance 140 chars
+B-0093,bulk/B0093.xml,,random: amount -5.00 · instrId 35 chars · settlement CLRG · charges DEBT 2 charges · bic lowercase BIC · debtor no name or BIC · creditor address hybrid · remittance structured and related · uetr version 1
+B-0094,bulk/B0094.xml,,random: currency lowercase eur · amount 0.01 · instrId 16 chars · settlement CLRG · charges CRED no charge · remittance 141 chars
+B-0095,bulk/B0095.xml,,random: currency USD · amount -5.00 · instrId 17 chars · settlement INGA · charges DEBT 2 charges · debtor no name or BIC · remittance 140 chars
+B-0096,bulk/B0096.xml,,random: currency JPY · amount 15 digits · instrId 17 chars · bic lowercase BIC · debtor name and AnyBIC · creditor address hybrid · uetr uppercase
+B-0097,bulk/B0097.xml,,random: currency lowercase eur · instrId 16 chars · settlement INGA · charges CRED 1 charge · bic BIC8 · debtor name and AnyBIC · creditor address no town · remittance 140 chars · uetr uppercase
+B-0098,bulk/B0098.xml,,random: amount 15 digits · instrId 16 chars · settlement INGA · charges CRED 1 charge · debtor AnyBIC only · creditor address hybrid · remittance structured and related · uetr uppercase
+B-0099,bulk/B0099.xml,,random: currency XAU commodity · amount 6 decimals · instrId 35 chars · settlement INGA · charges DEBT no charge · bic lowercase BIC · debtor name and AnyBIC · creditor address address lines only · remittance structured and related · uetr version 1
+B-0100,bulk/B0100.xml,,random: currency USD · amount 5 decimals · instrId 35 chars · charges CRED 1 charge · bic BIC8 · debtor no name or BIC · creditor address hybrid · remittance 140 chars · uetr not a UUID
+B-0101,bulk/B0101.xml,,random: currency lowercase eur · amount 14 digits · instrId 35 chars · settlement CLRG · creditor address hybrid · remittance 140 chars · uetr version 1
+B-0102,bulk/B0102.xml,,random: currency XAU commodity · amount -5.00 · instrId 16 chars · settlement INGA · charges DEBT 2 charges · debtor name and AnyBIC · creditor address hybrid · remittance none · uetr not a UUID
+B-0103,bulk/B0103.xml,,random: currency USD · instrId 35 chars · charges DEBT no charge · debtor name and AnyBIC · creditor address hybrid · uetr uppercase
+B-0104,bulk/B0104.xml,,random: currency XAU commodity · amount 0.00 · instrId 17 chars · settlement INGA · charges DEBT no charge · bic lowercase BIC · creditor address address lines only
+B-0105,bulk/B0105.xml,,random: currency JPY · amount 0.00 · instrId 16 chars · settlement CLRG · charges DEBT 1 charge · bic BIC8 · creditor address hybrid · remittance none · uetr uppercase
+B-0106,bulk/B0106.xml,,random: currency XAU commodity · amount 0.01 · instrId 17 chars · settlement INGA · debtor AnyBIC only · creditor address hybrid · uetr uppercase
+B-0107,bulk/B0107.xml,,random: currency lowercase eur · amount 15 digits · settlement INGA · charges CRED no charge · debtor name and AnyBIC · creditor address no town · remittance 141 chars · uetr version 1
+B-0108,bulk/B0108.xml,,random: currency lowercase eur · amount -5.00 · instrId slashes · settlement CLRG · debtor AnyBIC only · creditor address no town
+B-0109,bulk/B0109.xml,,random: currency USD · instrId slashes · charges DEBT 1 charge · debtor name and AnyBIC · remittance structured and related · uetr version 1
+B-0110,bulk/B0110.xml,,random: amount -5.00 · instrId slashes · settlement CLRG · charges CRED 1 charge · debtor AnyBIC only · creditor address address lines only · remittance structured and related · uetr version 1
+B-0111,bulk/B0111.xml,,random: currency USD · amount 5 decimals · instrId 35 chars · settlement INGA · charges CRED 1 charge · bic lowercase BIC · debtor AnyBIC only · creditor address full structured · remittance 140 chars · uetr uppercase
+B-0112,bulk/B0112.xml,,random: currency XAU commodity · amount 14 digits · instrId 16 chars · settlement INGA · charges CRED 1 charge · creditor address full structured · remittance 140 chars · uetr uppercase
+B-0113,bulk/B0113.xml,,random: currency XAU commodity · amount 15 digits · settlement CLRG · charges DEBT 2 charges · bic BIC8 · debtor AnyBIC only · creditor address hybrid · remittance structured and related · uetr not a UUID
+B-0114,bulk/B0114.xml,,random: currency XAU commodity · amount 6 decimals · instrId 17 chars · charges CRED 1 charge · bic BIC8 · debtor AnyBIC only · creditor address hybrid · remittance none · uetr uppercase
+B-0115,bulk/B0115.xml,,random: currency JPY · amount 6 decimals · instrId 17 chars · settlement CLRG · charges DEBT 2 charges · bic BIC8 · creditor address address lines only · remittance 141 chars
+B-0116,bulk/B0116.xml,,random: currency USD · amount 6 decimals · instrId 16 chars · settlement INGA · charges CRED 1 charge · bic lowercase BIC · remittance none · uetr not a UUID
+B-0117,bulk/B0117.xml,,random: currency XAU commodity · amount 0.01 · instrId 17 chars · charges CRED 1 charge · bic lowercase BIC · debtor name and AnyBIC · creditor address hybrid · uetr not a UUID
+B-0118,bulk/B0118.xml,,random: currency XAU commodity · amount 6 decimals · instrId 17 chars · settlement INGA · charges CRED 1 charge · bic lowercase BIC · debtor no name or BIC · creditor address full structured · remittance 141 chars · uetr uppercase
+B-0119,bulk/B0119.xml,,random: amount 0.00 · instrId 16 chars · settlement CLRG · charges DEBT 1 charge · bic BIC8 · debtor name and AnyBIC · creditor address full structured · remittance 140 chars · uetr uppercase
+B-0120,bulk/B0120.xml,,random: currency lowercase eur · amount 5 decimals · instrId 17 chars · settlement CLRG · charges CRED 1 charge · creditor address no town · remittance structured and related · uetr uppercase
+B-0121,bulk/B0121.xml,,random: currency XAU commodity · amount 0.00 · instrId 17 chars · settlement CLRG · charges DEBT no charge · bic BIC8 · creditor address full structured · remittance 141 chars · uetr uppercase
+B-0122,bulk/B0122.xml,,random: currency JPY · amount 5 decimals · instrId trailing slash · settlement CLRG · debtor name and AnyBIC · creditor address address lines only · remittance 140 chars · uetr uppercase
+B-0123,bulk/B0123.xml,,random: currency JPY · instrId trailing slash · settlement INGA · charges DEBT no charge · bic lowercase BIC · debtor AnyBIC only · remittance 141 chars · uetr not a UUID
+B-0124,bulk/B0124.xml,,random: currency USD · instrId trailing slash · charges SLEV · bic lowercase BIC · debtor no name or BIC · creditor address no town · remittance 140 chars · uetr version 1
+B-0125,bulk/B0125.xml,,random: currency lowercase eur · amount 5 decimals · instrId 35 chars · settlement CLRG · bic BIC8 · debtor AnyBIC only · remittance 141 chars · uetr version 1
+B-0126,bulk/B0126.xml,,random: amount 14 digits · charges CRED 1 charge · bic lowercase BIC · debtor AnyBIC only · creditor address no town · remittance 141 chars · uetr uppercase
+B-0127,bulk/B0127.xml,,random: currency USD · amount 0.01 · instrId 35 chars · settlement INGA · charges DEBT 1 charge · bic lowercase BIC · creditor address address lines only · remittance structured and related
+B-0128,bulk/B0128.xml,,random: currency lowercase eur · amount 0.01 · instrId 17 chars · settlement CLRG · charges SLEV · debtor name and AnyBIC · creditor address address lines only · remittance structured and related · uetr version 1
+B-0129,bulk/B0129.xml,,random: currency JPY · amount 15 digits · instrId 35 chars · settlement INGA · charges DEBT 1 charge · debtor name and AnyBIC · creditor address address lines only · remittance 140 chars · uetr not a UUID
+B-0130,bulk/B0130.xml,,random: currency XAU commodity · amount 0.00 · charges DEBT 2 charges · debtor AnyBIC only · creditor address no town · remittance 141 chars · uetr version 1
+B-0131,bulk/B0131.xml,,random: amount 0.01 · instrId trailing slash · bic lowercase BIC · creditor address full structured · remittance 141 chars
+B-0132,bulk/B0132.xml,,random: currency USD · instrId 17 chars · settlement CLRG · charges CRED 1 charge · creditor address address lines only · remittance 141 chars
+B-0133,bulk/B0133.xml,,random: currency JPY · amount 15 digits · instrId trailing slash · charges DEBT 2 charges · debtor AnyBIC only · creditor address full structured · remittance 140 chars
+B-0134,bulk/B0134.xml,,random: currency XAU commodity · amount 6 decimals · instrId 17 chars · charges DEBT no charge · debtor no name or BIC · creditor address no town · remittance structured and related
+B-0135,bulk/B0135.xml,,random: currency XAU commodity · amount 15 digits · settlement CLRG · charges DEBT no charge · debtor name and AnyBIC · remittance none · uetr not a UUID
+B-0136,bulk/B0136.xml,,random: amount 0.01 · settlement CLRG · charges DEBT 2 charges · bic BIC8 · creditor address hybrid · uetr uppercase
+B-0137,bulk/B0137.xml,,random: currency USD · amount 0.00 · charges DEBT no charge · bic BIC8 · creditor address address lines only · uetr version 1
+B-0138,bulk/B0138.xml,,random: currency XAU commodity · amount 15 digits · instrId 16 chars · settlement CLRG · charges DEBT 2 charges · debtor AnyBIC only · creditor address hybrid · remittance 141 chars
+B-0139,bulk/B0139.xml,,random: currency USD · amount 0.01 · instrId 17 chars · bic lowercase BIC · debtor no name or BIC · creditor address hybrid · uetr version 1
+B-0140,bulk/B0140.xml,,random: currency JPY · amount 6 decimals · instrId 35 chars · settlement INGA · charges DEBT 2 charges · debtor name and AnyBIC · creditor address hybrid · remittance 141 chars · uetr not a UUID
+B-0141,bulk/B0141.xml,,random: currency USD · amount 5 decimals · debtor name and AnyBIC · creditor address full structured · uetr uppercase
+B-0142,bulk/B0142.xml,,random: currency XAU commodity · amount 15 digits · instrId 35 chars · settlement CLRG · bic BIC8 · creditor address no town · remittance 141 chars · uetr version 1
+B-0143,bulk/B0143.xml,,random: currency lowercase eur · amount 14 digits · instrId 35 chars · settlement CLRG · charges DEBT 1 charge · creditor address no town · remittance 141 chars · uetr not a UUID
+B-0144,bulk/B0144.xml,,random: currency XAU commodity · amount 0.01 · instrId 35 chars · settlement INGA · charges DEBT no charge · bic lowercase BIC · debtor name and AnyBIC · remittance structured and related · uetr version 1
+B-0145,bulk/B0145.xml,,random: currency USD · amount 5 decimals · instrId 35 chars · charges SLEV · creditor address address lines only · remittance 140 chars · uetr not a UUID
+B-0146,bulk/B0146.xml,,random: currency JPY · amount 5 decimals · instrId 35 chars · settlement CLRG · charges SLEV · bic BIC8 · debtor AnyBIC only · creditor address no town · remittance 140 chars
+B-0147,bulk/B0147.xml,,random: currency USD · amount 5 decimals · instrId 35 chars · settlement INGA · charges CRED no charge · bic lowercase BIC · debtor AnyBIC only · creditor address address lines only · uetr version 1
+B-0148,bulk/B0148.xml,,random: currency JPY · amount 0.00 · instrId slashes · settlement CLRG · charges DEBT 2 charges · bic BIC8 · debtor name and AnyBIC · creditor address address lines only · remittance none
+B-0149,bulk/B0149.xml,,random: currency lowercase eur · amount -5.00 · instrId 35 chars · settlement CLRG · charges DEBT 1 charge · bic BIC8 · debtor AnyBIC only · creditor address full structured · remittance 141 chars
+B-0150,bulk/B0150.xml,,random: amount 15 digits · instrId trailing slash · charges DEBT no charge · debtor name and AnyBIC · creditor address no town · remittance 141 chars · uetr version 1
+B-0151,bulk/B0151.xml,,random: instrId slashes · settlement CLRG · charges CRED 1 charge · bic BIC8 · debtor no name or BIC · creditor address address lines only · remittance structured and related · uetr not a UUID
+B-0152,bulk/B0152.xml,,random: currency XAU commodity · amount 5 decimals · instrId trailing slash · settlement CLRG · charges DEBT no charge · bic lowercase BIC · creditor address hybrid · remittance structured and related · uetr version 1
+B-0153,bulk/B0153.xml,,random: currency lowercase eur · amount 15 digits · instrId 35 chars · settlement CLRG · charges SLEV · bic BIC8 · debtor name and AnyBIC · creditor address full structured · remittance 140 chars
+B-0154,bulk/B0154.xml,,random: currency JPY · amount 5 decimals · instrId 35 chars · charges CRED 1 charge · bic lowercase BIC · debtor name and AnyBIC · creditor address full structured · remittance 140 chars
+B-0155,bulk/B0155.xml,,random: currency USD · amount 5 decimals · instrId 16 chars · settlement CLRG · charges SLEV · bic lowercase BIC · debtor no name or BIC · remittance 141 chars
+B-0156,bulk/B0156.xml,,random: currency JPY · amount 14 digits · instrId 17 chars · settlement INGA · charges SLEV · bic BIC8 · creditor address no town · remittance none · uetr version 1
+B-0157,bulk/B0157.xml,,random: currency USD · amount 15 digits · settlement INGA · charges DEBT 2 charges · bic BIC8 · debtor name and AnyBIC · creditor address no town · remittance 140 chars · uetr version 1
+B-0158,bulk/B0158.xml,,random: currency JPY · amount 0.01 · instrId 17 chars · settlement INGA · charges SLEV · bic lowercase BIC · debtor no name or BIC · creditor address full structured
+B-0159,bulk/B0159.xml,,random: currency XAU commodity · instrId slashes · settlement CLRG · charges CRED no charge · bic BIC8 · debtor AnyBIC only · creditor address hybrid · remittance 141 chars
+B-0160,bulk/B0160.xml,,random: currency lowercase eur · amount 6 decimals · settlement CLRG · charges DEBT no charge · bic BIC8 · creditor address hybrid · remittance 141 chars · uetr uppercase
+B-0161,bulk/B0161.xml,,random: currency XAU commodity · amount 15 digits · instrId 35 chars · settlement CLRG · charges CRED 1 charge · debtor AnyBIC only · creditor address full structured
+B-0162,bulk/B0162.xml,,random: amount 15 digits · instrId 16 chars · settlement INGA · charges CRED no charge · bic BIC8 · debtor name and AnyBIC · creditor address hybrid · uetr uppercase
+B-0163,bulk/B0163.xml,,random: currency XAU commodity · amount 5 decimals · instrId 16 chars · settlement INGA · bic BIC8 · debtor name and AnyBIC · creditor address no town · remittance 141 chars · uetr version 1
+B-0164,bulk/B0164.xml,,random: currency JPY · amount -5.00 · instrId slashes · bic BIC8 · remittance 141 chars · uetr version 1
+B-0165,bulk/B0165.xml,,random: currency XAU commodity · amount -5.00 · instrId 35 chars · settlement INGA · charges CRED 1 charge · bic lowercase BIC · remittance none · uetr not a UUID
+B-0166,bulk/B0166.xml,,random: currency USD · amount 0.00 · settlement INGA · charges DEBT 1 charge · creditor address address lines only · remittance none
+B-0167,bulk/B0167.xml,,random: currency USD · amount -5.00 · instrId 35 chars · settlement INGA · bic BIC8 · debtor name and AnyBIC · remittance 141 chars
+B-0168,bulk/B0168.xml,,random: currency JPY · amount 0.00 · instrId 16 chars · settlement CLRG · charges CRED 1 charge · bic lowercase BIC · creditor address hybrid · remittance none · uetr not a UUID
+B-0169,bulk/B0169.xml,,random: currency XAU commodity · amount 5 decimals · instrId slashes · settlement CLRG · charges DEBT 2 charges · remittance structured and related · uetr not a UUID
+B-0170,bulk/B0170.xml,,random: settlement CLRG · charges CRED 1 charge · bic lowercase BIC · debtor name and AnyBIC · creditor address full structured
+B-0171,bulk/B0171.xml,,random: currency JPY · instrId 17 chars · settlement INGA · charges DEBT 2 charges · debtor AnyBIC only · creditor address full structured · remittance structured and related · uetr uppercase
+B-0172,bulk/B0172.xml,,random: currency XAU commodity · instrId 17 chars · settlement CLRG · charges DEBT 1 charge · bic lowercase BIC · creditor address address lines only · remittance structured and related · uetr version 1
+B-0173,bulk/B0173.xml,,random: currency USD · amount 15 digits · instrId 16 chars · settlement INGA · charges SLEV · bic BIC8 · debtor AnyBIC only · creditor address no town · remittance none
+B-0174,bulk/B0174.xml,,random: amount 0.01 · instrId slashes · charges DEBT 1 charge · bic lowercase BIC · debtor name and AnyBIC · creditor address full structured · uetr uppercase
+B-0175,bulk/B0175.xml,,random: currency USD · instrId 35 chars · settlement INGA · charges SLEV · debtor no name or BIC · creditor address hybrid · uetr uppercase
+B-0176,bulk/B0176.xml,,random: amount 15 digits · instrId 35 chars · settlement INGA · charges DEBT 1 charge · bic lowercase BIC · debtor name and AnyBIC · creditor address no town · remittance structured and related · uetr version 1
+B-0177,bulk/B0177.xml,,random: currency JPY · instrId 17 chars · settlement CLRG · charges CRED 1 charge · debtor name and AnyBIC · creditor address full structured
+B-0178,bulk/B0178.xml,,random: amount 0.00 · settlement CLRG · charges DEBT 2 charges · debtor name and AnyBIC · creditor address no town · remittance 140 chars · uetr version 1
+B-0179,bulk/B0179.xml,,random: instrId 35 chars · settlement CLRG · charges CRED 1 charge · bic BIC8 · debtor AnyBIC only · creditor address full structured · remittance 140 chars · uetr version 1
+B-0180,bulk/B0180.xml,,random: amount 0.00 · instrId slashes · charges CRED 1 charge · bic BIC8 · debtor AnyBIC only · remittance 140 chars · uetr not a UUID
+B-0181,bulk/B0181.xml,,random: amount 15 digits · instrId trailing slash · charges DEBT 2 charges · debtor no name or BIC · creditor address address lines only · remittance 140 chars · uetr version 1
+B-0182,bulk/B0182.xml,,random: currency JPY · amount 0.01 · instrId trailing slash · settlement INGA · charges DEBT 2 charges · bic lowercase BIC · debtor name and AnyBIC · creditor address full structured · remittance 140 chars
+B-0183,bulk/B0183.xml,,random: amount -5.00 · settlement CLRG · charges DEBT 1 charge · bic lowercase BIC · debtor AnyBIC only · creditor address no town · uetr version 1
+B-0184,bulk/B0184.xml,,random: currency JPY · amount 14 digits · settlement INGA · bic BIC8 · debtor AnyBIC only · remittance structured and related · uetr version 1
+B-0185,bulk/B0185.xml,,random: amount 0.00 · instrId trailing slash · settlement INGA · charges DEBT no charge · bic BIC8 · creditor address address lines only · remittance none · uetr uppercase
+B-0186,bulk/B0186.xml,,random: currency XAU commodity · amount 6 decimals · instrId 35 chars · charges DEBT 1 charge · creditor address hybrid · remittance 141 chars · uetr not a UUID
+B-0187,bulk/B0187.xml,,random: amount 0.00 · instrId 35 chars · charges CRED no charge · bic lowercase BIC · creditor address address lines only · remittance none · uetr version 1
+B-0188,bulk/B0188.xml,,random: currency JPY · amount 15 digits · instrId 17 chars · charges CRED 1 charge · bic lowercase BIC · creditor address hybrid · remittance 140 chars · uetr not a UUID
+B-0189,bulk/B0189.xml,,random: currency XAU commodity · amount 15 digits · instrId slashes · settlement CLRG · charges SLEV · debtor AnyBIC only · creditor address address lines only · remittance 140 chars
+B-0190,bulk/B0190.xml,,random: currency JPY · amount 5 decimals · instrId slashes · charges CRED 1 charge · bic BIC8 · debtor no name or BIC · creditor address full structured · remittance 141 chars · uetr version 1
+B-0191,bulk/B0191.xml,,random: currency USD · amount 6 decimals · instrId trailing slash · settlement INGA · charges SLEV · bic lowercase BIC · creditor address hybrid · uetr version 1
+B-0192,bulk/B0192.xml,,random: currency lowercase eur · amount 0.01 · instrId trailing slash · settlement CLRG · charges CRED 1 charge · bic BIC8 · debtor AnyBIC only · creditor address no town · remittance none · uetr version 1
+B-0193,bulk/B0193.xml,,random: currency XAU commodity · instrId 16 chars · charges CRED 1 charge · bic BIC8 · debtor no name or BIC · creditor address hybrid · remittance 141 chars · uetr version 1
+B-0194,bulk/B0194.xml,,random: currency USD · amount -5.00 · instrId trailing slash · settlement INGA · charges DEBT 2 charges · debtor AnyBIC only · creditor address full structured · remittance 141 chars · uetr uppercase
+B-0195,bulk/B0195.xml,,random: amount 15 digits · settlement INGA · charges SLEV · remittance 140 chars
+B-0196,bulk/B0196.xml,,random: currency USD · amount 14 digits · instrId slashes · charges DEBT 2 charges · debtor AnyBIC only · creditor address address lines only · remittance structured and related · uetr not a UUID
+B-0197,bulk/B0197.xml,,random: currency JPY · amount 0.00 · instrId 17 chars · charges CRED 1 charge · bic lowercase BIC · debtor AnyBIC only · creditor address full structured · remittance none · uetr uppercase
+B-0198,bulk/B0198.xml,,random: currency JPY · amount -5.00 · instrId slashes · settlement CLRG · debtor AnyBIC only · creditor address hybrid · remittance 141 chars
+B-0199,bulk/B0199.xml,,random: currency XAU commodity · amount 6 decimals · instrId 35 chars · settlement INGA · charges SLEV · bic BIC8 · creditor address address lines only · remittance 141 chars · uetr uppercase
+B-0200,bulk/B0200.xml,,random: currency lowercase eur · amount 14 digits · instrId trailing slash · charges DEBT no charge · bic BIC8 · creditor address address lines only · remittance structured and related · uetr uppercase
+B-0201,bulk/B0201.xml,,random: currency JPY · instrId slashes · settlement INGA · charges DEBT no charge · bic BIC8 · debtor no name or BIC · creditor address full structured · remittance none · uetr not a UUID
+B-0202,bulk/B0202.xml,,random: currency USD · instrId 17 chars · settlement CLRG · charges CRED no charge · bic lowercase BIC · debtor no name or BIC · creditor address no town · remittance structured and related · uetr uppercase
+B-0203,bulk/B0203.xml,,random: currency JPY · amount -5.00 · instrId 16 chars · settlement INGA · charges SLEV · bic lowercase BIC · debtor name and AnyBIC · creditor address hybrid · uetr not a UUID
+B-0204,bulk/B0204.xml,,random: amount 14 digits · charges SLEV · bic BIC8 · creditor address hybrid · remittance 140 chars · uetr uppercase
+B-0205,bulk/B0205.xml,,random: currency USD · amount 0.01 · instrId 16 chars · settlement CLRG · charges SLEV · bic BIC8 · debtor no name or BIC · remittance 140 chars
+B-0206,bulk/B0206.xml,,random: currency JPY · amount 0.01 · instrId 17 chars · charges CRED no charge · bic lowercase BIC · debtor name and AnyBIC · creditor address hybrid · remittance none · uetr not a UUID
+B-0207,bulk/B0207.xml,,random: currency USD · amount 15 digits · settlement CLRG · debtor no name or BIC · creditor address address lines only · remittance 140 chars · uetr uppercase
+B-0208,bulk/B0208.xml,,random: currency USD · amount 0.01 · instrId slashes · charges DEBT no charge · bic lowercase BIC · debtor name and AnyBIC · remittance none
+B-0209,bulk/B0209.xml,,random: currency XAU commodity · amount -5.00 · instrId 17 chars · settlement INGA · bic lowercase BIC · debtor no name or BIC · creditor address no town · remittance 140 chars · uetr uppercase
+B-0210,bulk/B0210.xml,,random: currency USD · amount 5 decimals · instrId trailing slash · settlement INGA · charges DEBT 2 charges · debtor name and AnyBIC · creditor address no town · remittance 140 chars · uetr not a UUID
+B-0211,bulk/B0211.xml,,random: currency XAU commodity · amount 15 digits · instrId slashes · settlement INGA · bic lowercase BIC · debtor name and AnyBIC · creditor address full structured · remittance structured and related · uetr not a UUID
+B-0212,bulk/B0212.xml,,random: amount 5 decimals · charges DEBT 2 charges · bic lowercase BIC · debtor no name or BIC · creditor address no town · uetr not a UUID
+B-0213,bulk/B0213.xml,,random: currency XAU commodity · amount 5 decimals · instrId 35 chars · charges DEBT no charge · creditor address full structured · remittance none
+B-0214,bulk/B0214.xml,,random: currency XAU commodity · amount 5 decimals · instrId trailing slash · settlement INGA · charges CRED no charge · creditor address no town · remittance structured and related · uetr not a UUID
+B-0215,bulk/B0215.xml,,random: amount -5.00 · instrId slashes · settlement CLRG · charges CRED 1 charge · bic BIC8 · debtor AnyBIC only · creditor address no town · remittance 140 chars · uetr uppercase
+B-0216,bulk/B0216.xml,,random: currency XAU commodity · amount 15 digits · instrId 35 chars · charges CRED no charge · bic BIC8 · debtor no name or BIC · creditor address no town · remittance 141 chars · uetr version 1
+B-0217,bulk/B0217.xml,,random: amount 6 decimals · instrId slashes · settlement CLRG · charges CRED no charge · bic lowercase BIC · debtor no name or BIC · creditor address no town · remittance structured and related
+B-0218,bulk/B0218.xml,,random: currency XAU commodity · amount -5.00 · charges DEBT no charge · debtor no name or BIC · creditor address no town · uetr uppercase
+B-0219,bulk/B0219.xml,,random: currency USD · amount 15 digits · instrId 35 chars · settlement INGA · charges CRED no charge · debtor no name or BIC · creditor address full structured · remittance 140 chars · uetr version 1
+B-0220,bulk/B0220.xml,,random: currency JPY · amount 0.01 · instrId 16 chars · settlement INGA · charges SLEV · debtor AnyBIC only · creditor address address lines only · remittance 140 chars · uetr uppercase
+B-0221,bulk/B0221.xml,,random: currency lowercase eur · instrId 35 chars · charges DEBT no charge · debtor name and AnyBIC · creditor address no town · remittance 141 chars · uetr version 1
+B-0222,bulk/B0222.xml,,random: currency USD · amount -5.00 · instrId slashes · charges CRED no charge · bic lowercase BIC · creditor address full structured · remittance none · uetr version 1
+B-0223,bulk/B0223.xml,,random: currency lowercase eur · amount 15 digits · instrId 17 chars · charges CRED 1 charge · creditor address hybrid · remittance 140 chars
+B-0224,bulk/B0224.xml,,random: currency lowercase eur · amount 0.01 · instrId 16 chars · debtor no name or BIC · creditor address hybrid · remittance none · uetr uppercase
+B-0225,bulk/B0225.xml,,random: currency lowercase eur · amount -5.00 · instrId 16 chars · settlement CLRG · bic lowercase BIC · debtor no name or BIC · creditor address no town · remittance 141 chars
+B-0226,bulk/B0226.xml,,random: currency XAU commodity · instrId trailing slash · settlement CLRG · charges CRED 1 charge · bic BIC8 · debtor no name or BIC · creditor address full structured · remittance structured and related · uetr version 1
+B-0227,bulk/B0227.xml,,random: currency lowercase eur · amount 15 digits · instrId slashes · settlement CLRG · charges DEBT 1 charge · bic lowercase BIC · debtor no name or BIC · creditor address no town · remittance 140 chars · uetr not a UUID
+B-0228,bulk/B0228.xml,,random: currency lowercase eur · amount 0.00 · instrId 16 chars · settlement CLRG · charges CRED no charge · bic BIC8 · debtor name and AnyBIC · creditor address full structured · remittance structured and related
+B-0229,bulk/B0229.xml,,random: currency USD · amount 5 decimals · instrId slashes · settlement CLRG · charges SLEV · bic lowercase BIC · debtor AnyBIC only · creditor address hybrid · remittance 141 chars
+B-0230,bulk/B0230.xml,,random: currency JPY · instrId 17 chars · settlement INGA · charges DEBT 1 charge · bic lowercase BIC · debtor name and AnyBIC · remittance 140 chars · uetr uppercase
+B-0231,bulk/B0231.xml,,random: currency JPY · amount 15 digits · instrId 16 chars · settlement INGA · charges DEBT 1 charge · bic lowercase BIC · debtor AnyBIC only · creditor address full structured · uetr uppercase
+B-0232,bulk/B0232.xml,,random: amount 15 digits · instrId 17 chars · charges DEBT 2 charges · bic lowercase BIC · debtor AnyBIC only · creditor address full structured · remittance 141 chars · uetr not a UUID
+B-0233,bulk/B0233.xml,,random: currency lowercase eur · instrId slashes · settlement INGA · charges CRED no charge · debtor name and AnyBIC · creditor address full structured · remittance 140 chars · uetr uppercase
+B-0234,bulk/B0234.xml,,random: currency USD · amount 5 decimals · instrId slashes · settlement INGA · charges CRED 1 charge · debtor no name or BIC · creditor address full structured
+B-0235,bulk/B0235.xml,,random: currency USD · amount 5 decimals · instrId 17 chars · settlement CLRG · charges CRED no charge · bic lowercase BIC · creditor address hybrid · remittance 140 chars · uetr version 1
+B-0236,bulk/B0236.xml,,random: currency JPY · amount 0.01 · settlement INGA · charges CRED 1 charge · debtor name and AnyBIC · creditor address full structured · remittance structured and related · uetr version 1
+B-0237,bulk/B0237.xml,,random: currency XAU commodity · instrId slashes · debtor no name or BIC · creditor address no town · remittance none · uetr version 1
+B-0238,bulk/B0238.xml,,random: amount -5.00 · instrId slashes · settlement INGA · bic BIC8 · debtor AnyBIC only · remittance structured and related · uetr uppercase
+B-0239,bulk/B0239.xml,,random: currency JPY · instrId slashes · settlement CLRG · charges DEBT 1 charge · bic BIC8 · creditor address address lines only · uetr not a UUID
+B-0240,bulk/B0240.xml,,random: currency USD · amount -5.00 · instrId slashes · settlement INGA · charges DEBT 2 charges · bic BIC8 · debtor no name or BIC · creditor address full structured · remittance none
+B-0241,bulk/B0241.xml,,random: currency lowercase eur · instrId 17 chars · settlement CLRG · charges DEBT 2 charges · bic lowercase BIC · debtor no name or BIC · creditor address full structured · remittance 140 chars
+B-0242,bulk/B0242.xml,,random: currency USD · amount 5 decimals · instrId trailing slash · settlement INGA · charges CRED 1 charge · bic BIC8 · debtor name and AnyBIC
+B-0243,bulk/B0243.xml,,random: currency lowercase eur · amount 14 digits · instrId 17 chars · settlement INGA · charges SLEV · bic lowercase BIC · debtor name and AnyBIC · remittance 141 chars
+B-0244,bulk/B0244.xml,,random: currency JPY · amount 15 digits · instrId slashes · bic BIC8 · debtor name and AnyBIC · remittance 140 chars · uetr version 1
+B-0245,bulk/B0245.xml,,random: amount -5.00 · instrId 35 chars · settlement INGA · charges DEBT 1 charge · creditor address hybrid · remittance none
+B-0246,bulk/B0246.xml,,random: currency lowercase eur · amount 5 decimals · instrId trailing slash · settlement CLRG · charges DEBT 2 charges · bic BIC8 · debtor name and AnyBIC · creditor address address lines only · remittance structured and related · uetr uppercase
+B-0247,bulk/B0247.xml,,random: amount 0.01 · instrId 17 chars · charges DEBT no charge · creditor address no town · remittance 140 chars · uetr version 1
+B-0248,bulk/B0248.xml,,random: currency lowercase eur · amount 6 decimals · instrId 35 chars · charges DEBT 1 charge · creditor address hybrid · remittance 141 chars · uetr uppercase
+B-0249,bulk/B0249.xml,,random: amount 15 digits · instrId 17 chars · settlement INGA · charges CRED no charge · bic lowercase BIC · remittance none · uetr not a UUID
+B-0250,bulk/B0250.xml,,random: currency USD · amount 0.01 · settlement INGA · bic lowercase BIC · debtor no name or BIC · creditor address address lines only · uetr not a UUID
+B-0251,bulk/B0251.xml,,random: currency lowercase eur · amount 0.01 · charges SLEV · bic lowercase BIC · debtor name and AnyBIC · creditor address full structured · remittance structured and related · uetr version 1
+B-0252,bulk/B0252.xml,,random: amount -5.00 · instrId 16 chars · charges DEBT no charge · debtor AnyBIC only
+B-0253,bulk/B0253.xml,,random: currency XAU commodity · amount 14 digits · instrId slashes · bic lowercase BIC · debtor no name or BIC · remittance 140 chars · uetr not a UUID
+B-0254,bulk/B0254.xml,,random: currency XAU commodity · amount 6 decimals · instrId trailing slash · settlement INGA · bic BIC8 · debtor no name or BIC · creditor address full structured · remittance 141 chars · uetr version 1
+B-0255,bulk/B0255.xml,,random: currency USD · settlement CLRG · charges DEBT 1 charge · bic lowercase BIC · debtor name and AnyBIC · creditor address hybrid · remittance 140 chars
+B-0256,bulk/B0256.xml,,random: amount 6 decimals · instrId slashes · charges DEBT no charge · debtor name and AnyBIC · creditor address hybrid · remittance structured and related · uetr version 1
+B-0257,bulk/B0257.xml,,random: currency JPY · amount 15 digits · charges CRED 1 charge · creditor address address lines only · uetr version 1
+B-0258,bulk/B0258.xml,,random: currency lowercase eur · amount 0.00 · instrId 16 chars · charges SLEV · debtor AnyBIC only · remittance 140 chars
+B-0259,bulk/B0259.xml,,random: currency JPY · amount -5.00 · settlement CLRG · charges DEBT no charge · debtor AnyBIC only · creditor address no town · remittance none
+B-0260,bulk/B0260.xml,,random: currency USD · amount 0.00 · settlement INGA · charges CRED 1 charge · bic BIC8 · creditor address no town · remittance none · uetr version 1
+B-0261,bulk/B0261.xml,,random: currency JPY · amount 5 decimals · instrId trailing slash · settlement INGA · charges DEBT 2 charges · bic BIC8 · creditor address address lines only · remittance 140 chars · uetr not a UUID
+B-0262,bulk/B0262.xml,,random: currency lowercase eur · amount 15 digits · instrId 35 chars · settlement INGA · charges DEBT no charge · bic BIC8 · remittance 140 chars · uetr not a UUID
+B-0263,bulk/B0263.xml,,random: instrId slashes · charges DEBT no charge · debtor no name or BIC · remittance 140 chars · uetr version 1
+B-0264,bulk/B0264.xml,,random: currency XAU commodity · amount 15 digits · instrId 17 chars · settlement INGA · charges DEBT no charge · bic BIC8 · debtor name and AnyBIC · creditor address address lines only · remittance none
+B-0265,bulk/B0265.xml,,random: currency lowercase eur · amount 0.00 · instrId 17 chars · charges DEBT 1 charge · uetr version 1
+B-0266,bulk/B0266.xml,,random: currency lowercase eur · amount 0.01 · instrId trailing slash · settlement CLRG · charges CRED 1 charge · bic lowercase BIC · creditor address no town · uetr uppercase
+B-0267,bulk/B0267.xml,,random: currency USD · amount -5.00 · instrId 35 chars · settlement CLRG · charges CRED no charge · bic BIC8 · debtor name and AnyBIC · creditor address full structured · remittance structured and related · uetr not a UUID
+B-0268,bulk/B0268.xml,,random: currency lowercase eur · amount 0.01 · instrId trailing slash · charges SLEV · bic BIC8 · debtor no name or BIC · creditor address no town · remittance none
+B-0269,bulk/B0269.xml,,random: currency XAU commodity · amount 0.00 · instrId 16 chars · settlement INGA · charges CRED no charge · bic lowercase BIC · debtor name and AnyBIC · creditor address address lines only · remittance none · uetr version 1
+B-0270,bulk/B0270.xml,,random: currency XAU commodity · amount 0.01 · instrId slashes · settlement INGA · charges DEBT no charge · bic lowercase BIC · debtor no name or BIC · creditor address no town · remittance structured and related
+B-0271,bulk/B0271.xml,,random: amount 15 digits · instrId 35 chars · charges DEBT 1 charge · debtor name and AnyBIC · creditor address address lines only · remittance structured and related · uetr version 1
+B-0272,bulk/B0272.xml,,random: currency lowercase eur · amount 6 decimals · instrId 35 chars · settlement INGA · charges DEBT no charge · debtor AnyBIC only · creditor address hybrid · remittance 141 chars · uetr uppercase
+B-0273,bulk/B0273.xml,,random: currency lowercase eur · amount 14 digits · instrId slashes · settlement CLRG · charges DEBT 1 charge · bic BIC8 · creditor address full structured · remittance 141 chars · uetr uppercase
+B-0274,bulk/B0274.xml,,random: amount 0.00 · instrId 35 chars · settlement INGA · charges CRED 1 charge · bic BIC8 · debtor name and AnyBIC · remittance none · uetr not a UUID
+B-0275,bulk/B0275.xml,,random: currency lowercase eur · amount 14 digits · instrId trailing slash · settlement INGA · debtor no name or BIC · creditor address full structured · remittance 141 chars · uetr not a UUID
+B-0276,bulk/B0276.xml,,random: currency USD · amount 5 decimals · instrId 35 chars · settlement CLRG · charges DEBT no charge · bic lowercase BIC · debtor AnyBIC only · creditor address hybrid · remittance structured and related · uetr not a UUID
+B-0277,bulk/B0277.xml,,random: currency USD · amount 5 decimals · instrId slashes · settlement INGA · charges DEBT 2 charges · bic BIC8 · debtor name and AnyBIC · creditor address address lines only · remittance 140 chars · uetr not a UUID
+B-0278,bulk/B0278.xml,,random: amount 0.01 · instrId 35 chars · charges DEBT 1 charge · bic lowercase BIC · debtor no name or BIC · uetr version 1
+B-0279,bulk/B0279.xml,,random: currency XAU commodity · amount -5.00 · instrId 16 chars · settlement INGA · bic BIC8 · debtor name and AnyBIC · creditor address full structured · remittance 141 chars · uetr not a UUID
+B-0280,bulk/B0280.xml,,random: currency XAU commodity · amount 5 decimals · instrId slashes · charges DEBT 2 charges · bic BIC8 · debtor AnyBIC only · creditor address no town · remittance none
+B-0281,bulk/B0281.xml,,random: currency lowercase eur · amount 14 digits · instrId slashes · settlement CLRG · charges DEBT no charge · uetr not a UUID
+B-0282,bulk/B0282.xml,,random: currency lowercase eur · amount 6 decimals · settlement INGA · bic lowercase BIC · debtor no name or BIC · creditor address full structured · remittance 140 chars · uetr not a UUID
+B-0283,bulk/B0283.xml,,random: currency XAU commodity · amount 6 decimals · instrId trailing slash · settlement INGA · charges DEBT 2 charges · bic BIC8 · debtor name and AnyBIC · creditor address hybrid · uetr uppercase
+B-0284,bulk/B0284.xml,,random: currency XAU commodity · amount 0.01 · instrId 35 chars · settlement INGA · bic lowercase BIC · creditor address hybrid · remittance structured and related
+B-0285,bulk/B0285.xml,,random: currency JPY · amount 0.00 · instrId slashes · charges DEBT 2 charges · creditor address full structured · remittance structured and related · uetr uppercase
+B-0286,bulk/B0286.xml,,random: currency lowercase eur · amount 6 decimals · instrId 17 chars · settlement INGA · charges DEBT no charge · bic BIC8 · debtor AnyBIC only · creditor address full structured · remittance structured and related · uetr version 1
+B-0287,bulk/B0287.xml,,random: currency lowercase eur · amount 0.00 · instrId trailing slash · settlement CLRG · charges CRED no charge · bic BIC8 · creditor address hybrid · remittance 140 chars · uetr uppercase
+B-0288,bulk/B0288.xml,,random: currency JPY · amount 15 digits · instrId 35 chars · charges SLEV · bic lowercase BIC · creditor address hybrid · remittance structured and related · uetr version 1
+B-0289,bulk/B0289.xml,,random: currency XAU commodity · amount 0.01 · instrId slashes · settlement CLRG · debtor name and AnyBIC · creditor address full structured · remittance none
+B-0290,bulk/B0290.xml,,random: currency USD · amount -5.00 · settlement INGA · charges DEBT 2 charges · bic BIC8 · debtor name and AnyBIC · creditor address full structured · remittance none · uetr version 1
+B-0291,bulk/B0291.xml,,random: currency USD · amount -5.00 · instrId 17 chars · charges CRED no charge · debtor AnyBIC only · creditor address full structured · uetr not a UUID
+B-0292,bulk/B0292.xml,,random: currency USD · amount 0.01 · settlement INGA · charges DEBT no charge · debtor name and AnyBIC · creditor address no town · remittance 140 chars · uetr uppercase
+B-0293,bulk/B0293.xml,,random: currency USD · amount 0.00 · instrId 17 chars · settlement INGA · charges DEBT 1 charge · bic BIC8 · debtor name and AnyBIC · creditor address address lines only · remittance structured and related · uetr uppercase
+B-0294,bulk/B0294.xml,,random: amount 6 decimals · instrId slashes · charges CRED no charge · bic BIC8 · creditor address no town · remittance none · uetr not a UUID
+B-0295,bulk/B0295.xml,,random: currency XAU commodity · instrId slashes · settlement CLRG · charges CRED no charge · bic lowercase BIC · debtor name and AnyBIC · creditor address address lines only · remittance structured and related · uetr uppercase
+B-0296,bulk/B0296.xml,,random: currency XAU commodity · amount 6 decimals · instrId 16 chars · settlement CLRG · charges DEBT 1 charge · creditor address address lines only · remittance 141 chars
+B-0297,bulk/B0297.xml,,random: currency JPY · amount 6 decimals · instrId trailing slash · charges CRED no charge · debtor no name or BIC · creditor address full structured · remittance structured and related · uetr version 1
+B-0298,bulk/B0298.xml,,random: currency USD · amount 0.00 · charges SLEV · bic BIC8 · debtor AnyBIC only · creditor address address lines only · remittance 140 chars
+B-0299,bulk/B0299.xml,,random: currency JPY · instrId 17 chars · settlement CLRG · charges SLEV · bic BIC8 · debtor name and AnyBIC · creditor address full structured · remittance 140 chars
+B-0300,bulk/B0300.xml,,random: currency lowercase eur · amount 0.01 · instrId slashes · settlement INGA · charges SLEV · bic lowercase BIC · debtor name and AnyBIC · remittance none · uetr version 1
+B-0301,bulk/B0301.xml,,random: amount 0.00 · instrId 16 chars · settlement CLRG · charges DEBT 2 charges · remittance 141 chars
+B-0302,bulk/B0302.xml,,random: amount 15 digits · instrId trailing slash · settlement INGA · creditor address address lines only · remittance structured and related
+B-0303,bulk/B0303.xml,,random: currency JPY · amount 15 digits · instrId 17 chars · charges DEBT 1 charge · bic BIC8 · debtor name and AnyBIC · creditor address no town · uetr not a UUID
+B-0304,bulk/B0304.xml,,random: currency JPY · instrId 16 chars · settlement CLRG · bic lowercase BIC · debtor no name or BIC · creditor address full structured · uetr uppercase
+B-0305,bulk/B0305.xml,,random: currency lowercase eur · amount 0.01 · instrId 35 chars · settlement CLRG · charges CRED no charge · bic BIC8 · creditor address no town · remittance none · uetr version 1
+B-0306,bulk/B0306.xml,,random: currency JPY · amount 15 digits · instrId trailing slash · settlement INGA · charges CRED 1 charge · bic BIC8 · debtor name and AnyBIC · creditor address full structured · remittance structured and related
+B-0307,bulk/B0307.xml,,random: currency USD · amount 15 digits · instrId trailing slash · settlement CLRG · charges DEBT no charge · bic BIC8 · debtor no name or BIC · creditor address address lines only · remittance structured and related · uetr version 1
+B-0308,bulk/B0308.xml,,random: currency USD · amount 6 decimals · instrId 16 chars · settlement CLRG · charges DEBT 1 charge · creditor address address lines only · remittance 141 chars
+B-0309,bulk/B0309.xml,,random: currency JPY · amount -5.00 · instrId 35 chars · settlement CLRG · charges CRED 1 charge · bic BIC8 · debtor AnyBIC only · creditor address no town · remittance 140 chars
+B-0310,bulk/B0310.xml,,random: amount 15 digits · instrId 17 chars · settlement INGA · debtor AnyBIC only · creditor address full structured · remittance none
+B-0311,bulk/B0311.xml,,random: currency USD · amount 6 decimals · instrId 17 chars · settlement INGA · charges SLEV · bic lowercase BIC · creditor address no town · remittance 140 chars · uetr uppercase
+B-0312,bulk/B0312.xml,,random: debtor AnyBIC only · creditor address hybrid · remittance 140 chars · uetr version 1
+B-0313,bulk/B0313.xml,,random: currency JPY · amount 0.01 · instrId 17 chars · charges SLEV · bic BIC8 · debtor name and AnyBIC · uetr version 1
+B-0314,bulk/B0314.xml,,random: amount 14 digits · instrId 16 chars · settlement INGA · charges CRED no charge · debtor AnyBIC only · remittance 141 chars · uetr not a UUID
+B-0315,bulk/B0315.xml,,random: currency JPY · amount 14 digits · instrId 35 chars · settlement CLRG · creditor address no town · remittance none
+B-0316,bulk/B0316.xml,,random: currency lowercase eur · instrId 17 chars · settlement CLRG · charges CRED 1 charge · debtor no name or BIC · creditor address address lines only · remittance structured and related · uetr not a UUID
+B-0317,bulk/B0317.xml,,random: currency lowercase eur · amount 0.01 · instrId slashes · settlement INGA · charges DEBT 2 charges · bic lowercase BIC · debtor no name or BIC · remittance structured and related
+B-0318,bulk/B0318.xml,,random: currency USD · instrId 17 chars · settlement CLRG · charges SLEV · bic lowercase BIC · debtor no name or BIC · creditor address full structured · remittance none · uetr version 1
+B-0319,bulk/B0319.xml,,random: currency XAU commodity · amount 14 digits · instrId trailing slash · settlement INGA · charges SLEV · bic lowercase BIC · debtor name and AnyBIC · creditor address no town · remittance structured and related
+B-0320,bulk/B0320.xml,,random: currency lowercase eur · instrId slashes · settlement INGA · bic BIC8 · debtor no name or BIC · remittance none · uetr version 1
+B-0321,bulk/B0321.xml,,random: amount 6 decimals · instrId 16 chars · settlement INGA · charges CRED 1 charge · bic lowercase BIC · creditor address address lines only · remittance none · uetr version 1
+B-0322,bulk/B0322.xml,,random: currency JPY · amount 6 decimals · instrId 35 chars · charges DEBT no charge · bic lowercase BIC · creditor address full structured · remittance none · uetr version 1
+B-0323,bulk/B0323.xml,,random: currency USD · amount 0.01 · instrId trailing slash · settlement INGA · bic lowercase BIC · debtor AnyBIC only · remittance none · uetr not a UUID
+B-0324,bulk/B0324.xml,,random: amount -5.00 · instrId 35 chars · settlement CLRG · charges DEBT 2 charges · bic BIC8 · debtor AnyBIC only · remittance structured and related · uetr uppercase
+B-0325,bulk/B0325.xml,,random: amount 0.01 · instrId trailing slash · settlement INGA · charges DEBT 1 charge · bic BIC8 · debtor no name or BIC · creditor address full structured · remittance structured and related
+B-0326,bulk/B0326.xml,,random: currency JPY · amount 6 decimals · instrId slashes · settlement INGA · charges CRED no charge · bic lowercase BIC · debtor AnyBIC only · creditor address hybrid · remittance 140 chars · uetr uppercase
+B-0327,bulk/B0327.xml,,random: amount 14 digits · instrId trailing slash · bic lowercase BIC · debtor name and AnyBIC · creditor address hybrid · remittance structured and related · uetr uppercase
+B-0328,bulk/B0328.xml,,random: currency USD · amount 0.01 · instrId 17 chars · charges DEBT no charge · bic BIC8 · debtor no name or BIC · creditor address address lines only · uetr version 1
+B-0329,bulk/B0329.xml,,random: currency XAU commodity · amount -5.00 · instrId slashes · settlement INGA · charges DEBT 1 charge · debtor name and AnyBIC · creditor address address lines only · remittance structured and related · uetr not a UUID
+B-0330,bulk/B0330.xml,,random: currency USD · instrId 17 chars · charges DEBT 1 charge · bic lowercase BIC · debtor AnyBIC only · uetr version 1
+B-0331,bulk/B0331.xml,,random: amount 5 decimals · instrId 35 chars · charges DEBT no charge · bic BIC8 · debtor name and AnyBIC · remittance 140 chars
+B-0332,bulk/B0332.xml,,random: currency USD · amount 0.01 · charges SLEV · bic BIC8 · creditor address hybrid · remittance 140 chars · uetr version 1
+B-0333,bulk/B0333.xml,,random: amount 6 decimals · instrId 17 chars · settlement CLRG · charges DEBT no charge · debtor AnyBIC only · creditor address hybrid · remittance structured and related · uetr not a UUID
+B-0334,bulk/B0334.xml,,random: currency JPY · amount 15 digits · instrId 35 chars · charges CRED 1 charge · debtor AnyBIC only · creditor address no town · remittance none · uetr uppercase
+B-0335,bulk/B0335.xml,,random: currency lowercase eur · amount 0.01 · instrId trailing slash · settlement CLRG · bic lowercase BIC · debtor no name or BIC · creditor address no town · remittance 140 chars
+B-0336,bulk/B0336.xml,,random: currency lowercase eur · amount 5 decimals · instrId 17 chars · settlement CLRG · charges DEBT 2 charges · bic BIC8 · creditor address address lines only · uetr not a UUID
+B-0337,bulk/B0337.xml,,random: currency lowercase eur · amount 15 digits · instrId slashes · charges DEBT no charge · bic lowercase BIC · creditor address address lines only · uetr not a UUID
+B-0338,bulk/B0338.xml,,random: currency lowercase eur · amount 0.01 · instrId 35 chars · settlement INGA · charges DEBT 1 charge · bic lowercase BIC · debtor no name or BIC · creditor address full structured · remittance structured and related · uetr version 1
+B-0339,bulk/B0339.xml,,random: currency JPY · amount 6 decimals · instrId 17 chars · settlement INGA · charges CRED no charge · creditor address full structured · remittance 140 chars
+B-0340,bulk/B0340.xml,,random: currency JPY · amount 0.01 · instrId 17 chars · settlement CLRG · charges DEBT 2 charges · bic lowercase BIC · debtor no name or BIC · creditor address no town · remittance 140 chars
+B-0341,bulk/B0341.xml,,random: currency lowercase eur · amount 6 decimals · instrId trailing slash · settlement CLRG · charges CRED 1 charge · bic BIC8 · debtor AnyBIC only · creditor address no town · remittance structured and related · uetr not a UUID
+B-0342,bulk/B0342.xml,,random: currency USD · amount 6 decimals · settlement INGA · charges DEBT no charge · bic lowercase BIC · creditor address hybrid · remittance 141 chars · uetr version 1
+B-0343,bulk/B0343.xml,,random: currency USD · amount 0.01 · instrId 16 chars · charges DEBT 2 charges · bic BIC8 · debtor name and AnyBIC · creditor address no town · uetr not a UUID
+B-0344,bulk/B0344.xml,,random: currency lowercase eur · amount 6 decimals · instrId 16 chars · settlement INGA · charges DEBT 2 charges · debtor no name or BIC · creditor address full structured · remittance none · uetr not a UUID
+B-0345,bulk/B0345.xml,,random: currency XAU commodity · amount 15 digits · instrId slashes · settlement INGA · bic BIC8 · debtor no name or BIC · creditor address address lines only · remittance none · uetr version 1
+B-0346,bulk/B0346.xml,,random: currency lowercase eur · amount 0.01 · instrId 17 chars · settlement CLRG · debtor AnyBIC only · creditor address no town · remittance 140 chars · uetr uppercase
+B-0347,bulk/B0347.xml,,random: currency USD · amount 14 digits · instrId 16 chars · charges CRED 1 charge · bic BIC8 · creditor address full structured · remittance 140 chars · uetr uppercase
+B-0348,bulk/B0348.xml,,random: instrId 16 chars · settlement INGA · charges DEBT 2 charges · bic BIC8 · debtor no name or BIC · creditor address no town · uetr uppercase
+B-0349,bulk/B0349.xml,,random: currency USD · amount 0.00 · instrId 17 chars · settlement INGA · charges DEBT no charge · creditor address hybrid · uetr version 1
+B-0350,bulk/B0350.xml,,random: amount 15 digits · instrId trailing slash · bic lowercase BIC · creditor address full structured · uetr uppercase
+B-0351,bulk/B0351.xml,,random: currency USD · amount -5.00 · instrId slashes · charges DEBT 2 charges · debtor name and AnyBIC · creditor address no town · remittance 141 chars · uetr uppercase
+B-0352,bulk/B0352.xml,,random: currency XAU commodity · instrId 35 chars · charges CRED 1 charge · bic lowercase BIC · creditor address no town · uetr not a UUID
+B-0353,bulk/B0353.xml,,random: currency lowercase eur · amount 0.00 · instrId 16 chars · settlement CLRG · charges DEBT 1 charge · bic BIC8 · debtor no name or BIC · remittance structured and related · uetr version 1
+B-0354,bulk/B0354.xml,,random: currency USD · amount -5.00 · instrId 17 chars · charges DEBT 1 charge · debtor no name or BIC · creditor address no town · remittance none · uetr not a UUID
+B-0355,bulk/B0355.xml,,random: currency lowercase eur · amount 0.01 · instrId 35 chars · settlement CLRG · charges DEBT 1 charge · creditor address no town · remittance 140 chars · uetr not a UUID
+B-0356,bulk/B0356.xml,,random: currency lowercase eur · amount 5 decimals · instrId 35 chars · settlement INGA · charges DEBT 2 charges · bic BIC8 · debtor AnyBIC only · creditor address hybrid · remittance 140 chars · uetr version 1
+B-0357,bulk/B0357.xml,,random: currency XAU commodity · amount 0.01 · instrId 17 chars · charges CRED no charge · bic BIC8 · creditor address no town · uetr version 1
+B-0358,bulk/B0358.xml,,random: amount 14 digits · instrId trailing slash · settlement CLRG · charges CRED no charge · debtor no name or BIC · remittance 140 chars · uetr version 1
+B-0359,bulk/B0359.xml,,random: currency XAU commodity · amount 6 decimals · instrId 35 chars · charges SLEV · bic lowercase BIC · debtor no name or BIC · creditor address no town · uetr not a UUID
+B-0360,bulk/B0360.xml,,random: currency JPY · amount 6 decimals · instrId 16 chars · charges CRED 1 charge · creditor address address lines only · remittance 141 chars · uetr uppercase
+B-0361,bulk/B0361.xml,,random: currency lowercase eur · instrId slashes · bic lowercase BIC · debtor name and AnyBIC · remittance structured and related · uetr uppercase
+B-0362,bulk/B0362.xml,,random: currency XAU commodity · instrId slashes · charges CRED 1 charge · bic lowercase BIC · debtor no name or BIC · creditor address hybrid · remittance structured and related · uetr uppercase
+B-0363,bulk/B0363.xml,,random: currency lowercase eur · amount 5 decimals · settlement CLRG · charges DEBT 2 charges · debtor AnyBIC only · uetr uppercase
+B-0364,bulk/B0364.xml,,random: currency JPY · amount 0.00 · instrId 17 chars · settlement CLRG · charges DEBT no charge · bic lowercase BIC · debtor name and AnyBIC · remittance 140 chars · uetr not a UUID
+B-0365,bulk/B0365.xml,,random: currency lowercase eur · amount 14 digits · instrId 17 chars · settlement INGA · charges CRED no charge · debtor name and AnyBIC · remittance 140 chars · uetr version 1
+B-0366,bulk/B0366.xml,,random: amount 6 decimals · instrId 16 chars · charges DEBT no charge · bic lowercase BIC · debtor AnyBIC only · creditor address hybrid · remittance structured and related · uetr uppercase
+B-0367,bulk/B0367.xml,,random: amount -5.00 · instrId 17 chars · settlement INGA · charges CRED 1 charge · bic BIC8 · debtor no name or BIC · creditor address full structured · remittance 141 chars · uetr version 1
+B-0368,bulk/B0368.xml,,random: amount -5.00 · instrId 17 chars · charges DEBT 2 charges · debtor no name or BIC · creditor address full structured · uetr uppercase
+B-0369,bulk/B0369.xml,,random: currency JPY · amount 6 decimals · instrId 17 chars · settlement CLRG · charges CRED no charge · bic lowercase BIC · debtor AnyBIC only · creditor address address lines only · remittance 141 chars · uetr version 1
+B-0370,bulk/B0370.xml,,random: currency lowercase eur · settlement CLRG · charges CRED no charge · bic BIC8 · creditor address address lines only · uetr not a UUID
+B-0371,bulk/B0371.xml,,random: currency USD · amount 5 decimals · instrId 16 chars · charges DEBT no charge · debtor name and AnyBIC · creditor address hybrid · remittance 141 chars · uetr not a UUID
+B-0372,bulk/B0372.xml,,random: currency lowercase eur · instrId 35 chars · settlement CLRG · bic BIC8 · debtor name and AnyBIC · creditor address address lines only · uetr uppercase
+B-0373,bulk/B0373.xml,,random: currency XAU commodity · amount 0.00 · instrId trailing slash · settlement CLRG · creditor address no town · remittance 140 chars · uetr not a UUID
+B-0374,bulk/B0374.xml,,random: amount 14 digits · instrId trailing slash · settlement INGA · charges CRED no charge · uetr not a UUID
+B-0375,bulk/B0375.xml,,random: amount 6 decimals · instrId slashes · charges DEBT 1 charge · debtor AnyBIC only · creditor address address lines only · remittance none · uetr uppercase
+B-0376,bulk/B0376.xml,,random: currency XAU commodity · amount 0.01 · instrId 17 chars · settlement INGA · charges CRED no charge · debtor name and AnyBIC · creditor address hybrid · remittance none · uetr not a UUID
+B-0377,bulk/B0377.xml,,random: currency XAU commodity · amount 6 decimals · instrId 16 chars · settlement INGA · charges DEBT 2 charges · bic lowercase BIC · creditor address address lines only
+B-0378,bulk/B0378.xml,,random: currency XAU commodity · amount 5 decimals · instrId 35 chars · settlement CLRG · charges CRED 1 charge · bic lowercase BIC · debtor AnyBIC only · creditor address address lines only · remittance structured and related · uetr version 1
+B-0379,bulk/B0379.xml,,random: currency XAU commodity · amount 0.01 · settlement INGA · charges CRED 1 charge · debtor no name or BIC · creditor address no town · remittance none · uetr uppercase
+B-0380,bulk/B0380.xml,,random: currency XAU commodity · amount 0.01 · instrId 35 chars · settlement CLRG · charges DEBT 1 charge · debtor no name or BIC · remittance 140 chars
+B-0381,bulk/B0381.xml,,random: currency USD · amount 0.00 · instrId 35 chars · settlement CLRG · charges DEBT no charge · bic lowercase BIC · debtor AnyBIC only · creditor address hybrid · remittance structured and related · uetr uppercase
+B-0382,bulk/B0382.xml,,random: amount 5 decimals · instrId slashes · settlement INGA · charges DEBT 1 charge · creditor address address lines only · uetr uppercase
+B-0383,bulk/B0383.xml,,random: currency USD · amount -5.00 · instrId 35 chars · settlement CLRG · debtor AnyBIC only · remittance structured and related · uetr not a UUID
+B-0384,bulk/B0384.xml,,random: currency XAU commodity · instrId 17 chars · settlement CLRG · bic BIC8 · debtor name and AnyBIC · creditor address address lines only · remittance 140 chars · uetr version 1
+B-0385,bulk/B0385.xml,,random: currency JPY · instrId 35 chars · settlement INGA · charges CRED 1 charge · bic BIC8 · remittance 141 chars · uetr version 1
+B-0386,bulk/B0386.xml,,random: currency JPY · instrId slashes · settlement CLRG · charges DEBT 2 charges · debtor no name or BIC · creditor address no town · remittance structured and related · uetr not a UUID
+B-0387,bulk/B0387.xml,,random: currency USD · amount 6 decimals · instrId trailing slash · settlement CLRG · charges SLEV · debtor AnyBIC only · creditor address full structured · remittance 140 chars
+B-0388,bulk/B0388.xml,,random: currency USD · instrId slashes · charges CRED no charge · bic BIC8 · debtor AnyBIC only · creditor address no town · remittance 140 chars · uetr version 1
+B-0389,bulk/B0389.xml,,random: currency lowercase eur · amount 6 decimals · instrId trailing slash · charges DEBT 2 charges · bic BIC8 · debtor no name or BIC · remittance none · uetr not a UUID
+B-0390,bulk/B0390.xml,,random: currency lowercase eur · amount 15 digits · instrId 17 chars · settlement CLRG · charges SLEV · debtor name and AnyBIC · remittance 140 chars
+B-0391,bulk/B0391.xml,,random: currency USD · amount 5 decimals · settlement INGA · charges CRED no charge · bic BIC8 · debtor no name or BIC · creditor address address lines only · uetr not a UUID
+B-0392,bulk/B0392.xml,,random: currency XAU commodity · amount 0.00 · instrId trailing slash · settlement INGA · bic lowercase BIC · debtor no name or BIC · creditor address full structured · remittance 141 chars · uetr not a UUID
+B-0393,bulk/B0393.xml,,random: currency JPY · instrId 16 chars · settlement CLRG · charges CRED 1 charge · bic lowercase BIC · debtor name and AnyBIC · creditor address full structured · remittance none · uetr not a UUID
+B-0394,bulk/B0394.xml,,random: currency XAU commodity · amount 6 decimals · instrId slashes · settlement INGA · charges DEBT 2 charges · bic lowercase BIC · debtor name and AnyBIC · creditor address full structured · remittance structured and related · uetr uppercase
+B-0395,bulk/B0395.xml,,random: currency XAU commodity · amount 0.00 · instrId slashes · settlement INGA · charges CRED 1 charge · debtor name and AnyBIC · creditor address hybrid · remittance none · uetr not a UUID
+B-0396,bulk/B0396.xml,,random: currency lowercase eur · amount 6 decimals · instrId 16 chars · settlement CLRG · charges CRED no charge · bic lowercase BIC · debtor no name or BIC · remittance none · uetr not a UUID
+B-0397,bulk/B0397.xml,,random: amount 5 decimals · instrId 16 chars · charges SLEV · creditor address full structured · uetr not a UUID
+B-0398,bulk/B0398.xml,,random: currency USD · amount 0.01 · instrId slashes · settlement CLRG · charges DEBT 1 charge · bic BIC8 · debtor no name or BIC · remittance 141 chars
+B-0399,bulk/B0399.xml,,random: currency lowercase eur · amount -5.00 · instrId trailing slash · charges CRED 1 charge · bic lowercase BIC · debtor AnyBIC only · remittance 140 chars · uetr uppercase
+B-0400,bulk/B0400.xml,,random: currency lowercase eur · instrId 16 chars · settlement INGA · bic BIC8 · debtor no name or BIC · creditor address full structured
+B-0401,bulk/B0401.xml,,random: currency lowercase eur · amount 14 digits · instrId 17 chars · settlement CLRG · charges DEBT 2 charges · bic lowercase BIC · creditor address full structured · remittance structured and related · uetr not a UUID
+B-0402,bulk/B0402.xml,,random: currency JPY · amount 14 digits · instrId 35 chars · settlement CLRG · charges DEBT 2 charges · debtor AnyBIC only · remittance structured and related · uetr uppercase
+B-0403,bulk/B0403.xml,,random: currency JPY · amount 0.00 · instrId 16 chars · charges CRED no charge · debtor AnyBIC only · creditor address address lines only · remittance none · uetr uppercase
+B-0404,bulk/B0404.xml,,random: currency USD · amount 5 decimals · instrId slashes · settlement CLRG · charges DEBT no charge · bic BIC8 · remittance structured and related
+B-0405,bulk/B0405.xml,,random: currency lowercase eur · instrId slashes · settlement INGA · charges DEBT 2 charges · bic lowercase BIC · debtor AnyBIC only · creditor address hybrid · remittance none · uetr version 1
+B-0406,bulk/B0406.xml,,random: currency USD · instrId slashes · settlement INGA · charges CRED 1 charge · bic BIC8 · remittance structured and related · uetr not a UUID
+B-0407,bulk/B0407.xml,,random: currency lowercase eur · amount 6 decimals · instrId 17 chars · bic lowercase BIC · uetr not a UUID
+B-0408,bulk/B0408.xml,,random: amount 15 digits · charges DEBT 2 charges · bic lowercase BIC · debtor name and AnyBIC · creditor address full structured · remittance 141 chars
+B-0409,bulk/B0409.xml,,random: currency JPY · amount 6 decimals · instrId trailing slash · settlement INGA · charges CRED no charge · bic BIC8 · creditor address full structured · uetr version 1
+B-0410,bulk/B0410.xml,,random: amount 6 decimals · instrId trailing slash · settlement CLRG · charges DEBT 2 charges · bic lowercase BIC · debtor no name or BIC · creditor address hybrid · remittance structured and related · uetr not a UUID
+B-0411,bulk/B0411.xml,,random: currency USD · amount 15 digits · instrId 17 chars · charges DEBT no charge · bic BIC8 · debtor AnyBIC only · creditor address no town · remittance none
+B-0412,bulk/B0412.xml,,random: currency XAU commodity · amount 6 decimals · instrId 16 chars · debtor no name or BIC · remittance none
+B-0413,bulk/B0413.xml,,random: currency lowercase eur · instrId slashes · settlement CLRG · charges CRED 1 charge · creditor address hybrid · uetr uppercase
+B-0414,bulk/B0414.xml,,random: currency lowercase eur · amount 0.00 · instrId 35 chars · settlement CLRG · charges DEBT 1 charge · bic lowercase BIC · debtor name and AnyBIC · creditor address address lines only · remittance structured and related
+B-0415,bulk/B0415.xml,,random: currency lowercase eur · amount 15 digits · instrId slashes · settlement CLRG · charges CRED 1 charge · bic BIC8 · debtor no name or BIC · remittance structured and related · uetr version 1
+B-0416,bulk/B0416.xml,,random: currency lowercase eur · amount -5.00 · instrId 16 chars · settlement INGA · charges DEBT 1 charge · uetr version 1
+B-0417,bulk/B0417.xml,,random: currency lowercase eur · amount 0.00 · instrId 17 chars · charges CRED no charge · bic BIC8 · creditor address full structured · remittance none · uetr uppercase
+B-0418,bulk/B0418.xml,,random: currency USD · amount 5 decimals · instrId 17 chars · settlement INGA · charges CRED no charge · debtor name and AnyBIC · creditor address address lines only · remittance 141 chars
+B-0419,bulk/B0419.xml,,random: currency USD · amount 0.01 · instrId 16 chars · charges DEBT 1 charge · bic BIC8 · debtor no name or BIC · remittance structured and related · uetr not a UUID
+B-0420,bulk/B0420.xml,,random: currency JPY · instrId 16 chars · settlement INGA · debtor AnyBIC only · remittance 141 chars
+B-0421,bulk/B0421.xml,,random: currency JPY · amount 0.01 · instrId 16 chars · charges CRED no charge · bic lowercase BIC · debtor name and AnyBIC · remittance 141 chars
+B-0422,bulk/B0422.xml,,random: currency lowercase eur · instrId slashes · settlement INGA · charges CRED 1 charge · debtor name and AnyBIC · remittance 140 chars · uetr uppercase
+B-0423,bulk/B0423.xml,,random: currency lowercase eur · amount 0.00 · instrId 35 chars · settlement CLRG · charges DEBT 2 charges · bic lowercase BIC · debtor no name or BIC · creditor address hybrid · remittance 141 chars · uetr uppercase
+B-0424,bulk/B0424.xml,,random: amount 0.00 · instrId 17 chars · charges DEBT no charge · bic BIC8 · debtor AnyBIC only · creditor address hybrid · remittance 141 chars · uetr uppercase
+B-0425,bulk/B0425.xml,,random: currency XAU commodity · amount 0.01 · instrId trailing slash · settlement CLRG · charges DEBT no charge · bic lowercase BIC · debtor name and AnyBIC · creditor address full structured · uetr not a UUID
+B-0426,bulk/B0426.xml,,random: amount 0.01 · instrId slashes · settlement INGA · debtor AnyBIC only · uetr version 1
+B-0427,bulk/B0427.xml,,random: currency USD · amount 15 digits · instrId 35 chars · settlement INGA · charges DEBT no charge · creditor address full structured · uetr uppercase
+B-0428,bulk/B0428.xml,,random: currency USD · amount 14 digits · instrId 17 chars · settlement CLRG · charges DEBT 1 charge · bic BIC8 · debtor AnyBIC only · creditor address hybrid · remittance 140 chars · uetr uppercase
+B-0429,bulk/B0429.xml,,random: currency JPY · amount 5 decimals · instrId 16 chars · settlement INGA · charges SLEV · bic BIC8 · debtor name and AnyBIC · creditor address address lines only · remittance structured and related · uetr not a UUID
+B-0430,bulk/B0430.xml,,random: instrId 16 chars · settlement INGA · charges CRED 1 charge · debtor no name or BIC · creditor address hybrid · remittance structured and related · uetr uppercase
+B-0431,bulk/B0431.xml,,random: currency lowercase eur · amount 14 digits · instrId 17 chars · settlement CLRG · charges DEBT no charge · creditor address no town · remittance 140 chars · uetr not a UUID
+B-0432,bulk/B0432.xml,,random: currency USD · amount 15 digits · instrId 35 chars · settlement INGA · charges CRED no charge · bic BIC8 · creditor address address lines only · remittance none · uetr not a UUID
+B-0433,bulk/B0433.xml,,random: amount 0.00 · instrId 17 chars · settlement INGA · charges DEBT 1 charge · bic BIC8 · debtor AnyBIC only · creditor address hybrid · remittance structured and related · uetr not a UUID
+B-0434,bulk/B0434.xml,,random: currency lowercase eur · amount 6 decimals · instrId slashes · settlement CLRG · bic BIC8 · creditor address no town · remittance structured and related · uetr not a UUID
+B-0435,bulk/B0435.xml,,random: currency lowercase eur · amount 14 digits · instrId slashes · settlement CLRG · charges SLEV · bic lowercase BIC · creditor address no town · uetr not a UUID
+B-0436,bulk/B0436.xml,,random: amount 5 decimals · instrId 35 chars · settlement CLRG · charges DEBT 2 charges · creditor address no town · remittance none · uetr uppercase
+B-0437,bulk/B0437.xml,,random: currency USD · amount -5.00 · instrId slashes · charges CRED 1 charge · debtor AnyBIC only · creditor address address lines only · remittance none · uetr not a UUID
+B-0438,bulk/B0438.xml,,random: currency lowercase eur · amount 0.00 · charges SLEV · bic lowercase BIC · creditor address no town · remittance structured and related · uetr not a UUID
+B-0439,bulk/B0439.xml,,random: currency USD · amount 6 decimals · instrId 16 chars · bic BIC8 · debtor AnyBIC only · remittance 140 chars · uetr not a UUID
+B-0440,bulk/B0440.xml,,random: currency XAU commodity · amount 5 decimals · instrId slashes · charges CRED 1 charge · bic lowercase BIC · debtor AnyBIC only · creditor address no town · uetr not a UUID
+B-0441,bulk/B0441.xml,,random: currency XAU commodity · amount 5 decimals · settlement INGA · charges DEBT 2 charges · bic BIC8 · debtor name and AnyBIC · remittance 141 chars · uetr version 1
+B-0442,bulk/B0442.xml,,random: currency lowercase eur · amount 0.00 · instrId trailing slash · settlement CLRG · charges DEBT no charge · bic BIC8 · debtor name and AnyBIC · uetr version 1
+B-0443,bulk/B0443.xml,,random: currency JPY · amount 6 decimals · instrId 17 chars · settlement INGA · charges SLEV · bic lowercase BIC · debtor AnyBIC only · creditor address full structured
+B-0444,bulk/B0444.xml,,random: currency XAU commodity · instrId 16 chars · settlement INGA · charges CRED no charge · bic lowercase BIC · debtor name and AnyBIC · remittance 141 chars
+B-0445,bulk/B0445.xml,,random: amount 0.00 · instrId 16 chars · charges CRED 1 charge · bic lowercase BIC · debtor AnyBIC only · creditor address no town · remittance 140 chars · uetr not a UUID
+B-0446,bulk/B0446.xml,,random: amount 0.00 · instrId slashes · settlement INGA · charges DEBT 2 charges · debtor name and AnyBIC · creditor address full structured · remittance none
+B-0447,bulk/B0447.xml,,random: currency USD · amount 14 digits · instrId trailing slash · settlement INGA · charges CRED 1 charge · bic BIC8 · debtor no name or BIC · creditor address hybrid · remittance none · uetr not a UUID
+B-0448,bulk/B0448.xml,,random: currency JPY · amount 0.00 · instrId 16 chars · settlement CLRG · charges CRED 1 charge · bic BIC8 · debtor name and AnyBIC · creditor address full structured · uetr version 1
+B-0449,bulk/B0449.xml,,random: currency lowercase eur · amount 15 digits · instrId 17 chars · charges CRED no charge · bic lowercase BIC · debtor name and AnyBIC · creditor address hybrid · uetr version 1
+B-0450,bulk/B0450.xml,,random: currency USD · amount 0.00 · instrId 16 chars · settlement INGA · bic lowercase BIC · debtor AnyBIC only · remittance none · uetr version 1
+B-0451,bulk/B0451.xml,,random: currency lowercase eur · instrId 35 chars · charges SLEV · creditor address no town · remittance none · uetr version 1
+B-0452,bulk/B0452.xml,,random: currency USD · amount 5 decimals · charges SLEV · bic BIC8 · debtor AnyBIC only · creditor address address lines only · remittance 140 chars
+B-0453,bulk/B0453.xml,,random: amount 6 decimals · instrId 17 chars · settlement CLRG · charges DEBT 1 charge · bic BIC8 · debtor AnyBIC only · creditor address address lines only · remittance structured and related · uetr not a UUID
+B-0454,bulk/B0454.xml,,random: currency lowercase eur · amount 0.01 · instrId slashes · settlement INGA · charges CRED no charge · bic lowercase BIC · debtor name and AnyBIC · creditor address address lines only · remittance 141 chars · uetr version 1
+B-0455,bulk/B0455.xml,,random: currency USD · amount 14 digits · instrId slashes · settlement CLRG · charges DEBT 1 charge · bic lowercase BIC · creditor address full structured · remittance structured and related · uetr uppercase
+B-0456,bulk/B0456.xml,,random: currency JPY · amount 0.00 · instrId 35 chars · settlement INGA · charges DEBT no charge · bic BIC8 · creditor address address lines only · remittance 141 chars
+B-0457,bulk/B0457.xml,,random: amount 14 digits · instrId 17 chars · charges DEBT no charge · bic lowercase BIC · debtor no name or BIC · creditor address no town · remittance structured and related · uetr version 1
+B-0458,bulk/B0458.xml,,random: amount -5.00 · instrId trailing slash · settlement CLRG · charges DEBT 2 charges · bic BIC8 · debtor AnyBIC only · creditor address address lines only · remittance none · uetr not a UUID
+B-0459,bulk/B0459.xml,,random: currency USD · amount 0.01 · instrId 35 chars · settlement CLRG · charges DEBT 2 charges · creditor address hybrid · remittance 140 chars
+B-0460,bulk/B0460.xml,,random: currency JPY · amount 0.01 · instrId trailing slash · settlement CLRG · charges SLEV · bic lowercase BIC · creditor address hybrid · uetr uppercase
+B-0461,bulk/B0461.xml,,random: currency lowercase eur · amount 6 decimals · instrId trailing slash · settlement CLRG · charges CRED no charge · debtor no name or BIC · creditor address no town · remittance 141 chars
+B-0462,bulk/B0462.xml,,random: currency JPY · amount 14 digits · instrId 35 chars · charges DEBT 2 charges · bic lowercase BIC · debtor name and AnyBIC · creditor address hybrid · remittance structured and related · uetr not a UUID
+B-0463,bulk/B0463.xml,,random: currency JPY · amount 6 decimals · instrId 17 chars · settlement INGA · charges DEBT 1 charge · bic lowercase BIC · debtor AnyBIC only · creditor address address lines only · uetr uppercase
+B-0464,bulk/B0464.xml,,random: currency JPY · amount 15 digits · instrId slashes · settlement INGA · charges DEBT 2 charges · debtor name and AnyBIC · creditor address hybrid · remittance none · uetr not a UUID
+B-0465,bulk/B0465.xml,,random: currency lowercase eur · instrId 35 chars · settlement CLRG · charges DEBT no charge · bic BIC8 · debtor name and AnyBIC · creditor address address lines only · remittance structured and related
+B-0466,bulk/B0466.xml,,random: currency lowercase eur · amount 14 digits · instrId 35 chars · settlement INGA · charges DEBT no charge · bic BIC8 · debtor name and AnyBIC · creditor address full structured · remittance structured and related
+B-0467,bulk/B0467.xml,,random: currency lowercase eur · amount 6 decimals · instrId 17 chars · settlement INGA · charges DEBT 1 charge · bic lowercase BIC · debtor no name or BIC · remittance 140 chars · uetr version 1
+B-0468,bulk/B0468.xml,,random: currency XAU commodity · amount 0.01 · instrId 16 chars · settlement CLRG · charges CRED 1 charge · bic BIC8 · debtor no name or BIC · creditor address hybrid · uetr version 1
+B-0469,bulk/B0469.xml,,random: currency lowercase eur · amount 14 digits · instrId 17 chars · settlement CLRG · charges DEBT 2 charges · bic lowercase BIC · debtor no name or BIC · remittance none
+B-0470,bulk/B0470.xml,,random: amount 5 decimals · instrId trailing slash · settlement CLRG · charges DEBT 1 charge · bic lowercase BIC · creditor address full structured · remittance 141 chars · uetr not a UUID
+B-0471,bulk/B0471.xml,,random: currency JPY · amount 5 decimals · instrId 17 chars · settlement INGA · charges DEBT no charge · bic lowercase BIC · creditor address hybrid · uetr not a UUID
+B-0472,bulk/B0472.xml,,random: currency XAU commodity · amount 5 decimals · instrId slashes · charges DEBT 2 charges · bic lowercase BIC · debtor AnyBIC only · creditor address address lines only · remittance 140 chars · uetr version 1
+B-0473,bulk/B0473.xml,,random: currency USD · amount -5.00 · instrId 35 chars · settlement CLRG · bic lowercase BIC · debtor no name or BIC · creditor address address lines only · remittance 140 chars · uetr uppercase
+B-0474,bulk/B0474.xml,,random: currency XAU commodity · amount 6 decimals · instrId trailing slash · settlement CLRG · charges CRED 1 charge · bic BIC8 · debtor AnyBIC only · creditor address no town · remittance 140 chars · uetr version 1
+B-0475,bulk/B0475.xml,,random: currency JPY · amount 0.00 · instrId 17 chars · settlement INGA · charges SLEV · bic lowercase BIC · debtor no name or BIC · creditor address no town · remittance 141 chars
+B-0476,bulk/B0476.xml,,random: currency XAU commodity · amount 5 decimals · instrId 17 chars · settlement CLRG · debtor name and AnyBIC · remittance none
+B-0477,bulk/B0477.xml,,random: currency JPY · instrId trailing slash · bic BIC8 · debtor no name or BIC · creditor address no town · remittance none · uetr version 1
+B-0478,bulk/B0478.xml,,random: amount 15 digits · instrId slashes · charges SLEV · bic BIC8 · debtor name and AnyBIC · creditor address full structured
+B-0479,bulk/B0479.xml,,random: currency lowercase eur · amount 0.01 · settlement CLRG · charges CRED no charge · bic BIC8 · debtor AnyBIC only · creditor address no town · remittance structured and related · uetr uppercase
+B-0480,bulk/B0480.xml,,random: currency USD · amount 0.00 · instrId 35 chars · charges SLEV · bic BIC8 · creditor address hybrid · remittance 140 chars · uetr not a UUID
+B-0481,bulk/B0481.xml,,random: amount 6 decimals · instrId slashes · settlement CLRG · charges DEBT no charge · bic lowercase BIC · debtor name and AnyBIC · creditor address no town · remittance 141 chars · uetr not a UUID
+B-0482,bulk/B0482.xml,,random: currency USD · amount -5.00 · instrId trailing slash · settlement INGA · bic BIC8 · creditor address no town · remittance 141 chars · uetr not a UUID
+B-0483,bulk/B0483.xml,,random: currency lowercase eur · amount 14 digits · instrId slashes · charges CRED no charge · bic lowercase BIC · debtor name and AnyBIC · remittance structured and related · uetr not a UUID
+B-0484,bulk/B0484.xml,,random: currency XAU commodity · amount 14 digits · instrId trailing slash · charges DEBT no charge · bic BIC8 · debtor AnyBIC only · creditor address hybrid
+B-0485,bulk/B0485.xml,,random: instrId 16 chars · settlement INGA · bic lowercase BIC · debtor name and AnyBIC · remittance structured and related · uetr uppercase
+B-0486,bulk/B0486.xml,,random: currency JPY · amount 6 decimals · instrId 35 chars · settlement CLRG · charges CRED 1 charge · bic BIC8 · debtor name and AnyBIC · remittance structured and related · uetr version 1
+B-0487,bulk/B0487.xml,,random: currency lowercase eur · amount 0.01 · instrId slashes · settlement INGA · charges DEBT 1 charge · bic BIC8 · debtor name and AnyBIC · creditor address no town · uetr uppercase
+B-0488,bulk/B0488.xml,,random: currency JPY · amount 15 digits · instrId slashes · settlement INGA · charges CRED 1 charge · debtor name and AnyBIC · creditor address address lines only · remittance none · uetr version 1
+B-0489,bulk/B0489.xml,,random: currency lowercase eur · amount 0.00 · instrId slashes · charges CRED 1 charge · bic BIC8 · debtor no name or BIC · creditor address hybrid
+B-0490,bulk/B0490.xml,,random: currency lowercase eur · amount 15 digits · bic lowercase BIC · creditor address no town · uetr not a UUID
+B-0491,bulk/B0491.xml,,random: currency USD · amount 15 digits · charges DEBT 1 charge · debtor name and AnyBIC · creditor address no town · remittance structured and related · uetr not a UUID
+B-0492,bulk/B0492.xml,,random: currency JPY · amount 5 decimals · instrId 17 chars · settlement CLRG · debtor AnyBIC only · creditor address no town · uetr version 1
+B-0493,bulk/B0493.xml,,random: currency USD · amount 0.00 · settlement CLRG · charges DEBT 1 charge · bic lowercase BIC · debtor no name or BIC · creditor address address lines only · remittance 141 chars · uetr not a UUID
+B-0494,bulk/B0494.xml,,random: amount 6 decimals · instrId trailing slash · charges DEBT 1 charge · bic lowercase BIC · creditor address hybrid · uetr version 1
+B-0495,bulk/B0495.xml,,random: amount -5.00 · instrId slashes · settlement INGA · charges DEBT 2 charges · debtor AnyBIC only · creditor address address lines only · remittance none
+B-0496,bulk/B0496.xml,,random: currency JPY · amount 0.00 · instrId 35 chars · settlement CLRG · charges DEBT 1 charge · creditor address full structured · remittance 141 chars · uetr not a UUID
+B-0497,bulk/B0497.xml,,random: currency XAU commodity · amount 15 digits · settlement CLRG · charges DEBT 1 charge · bic BIC8 · debtor AnyBIC only · uetr uppercase
+B-0498,bulk/B0498.xml,,random: currency XAU commodity · amount 14 digits · instrId 16 chars · charges SLEV · bic lowercase BIC · remittance 141 chars
+B-0499,bulk/B0499.xml,,random: currency XAU commodity · amount 14 digits · instrId slashes · settlement INGA · charges DEBT 1 charge · bic BIC8 · debtor no name or BIC · creditor address address lines only · uetr version 1
+B-0500,bulk/B0500.xml,,random: currency XAU commodity · amount -5.00 · instrId 17 chars · bic BIC8 · debtor AnyBIC only · creditor address address lines only · remittance none
