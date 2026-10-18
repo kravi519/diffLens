@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import random
 import re
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
@@ -98,18 +99,66 @@ def donut(counts: dict[str, int], slices: dict[str, tuple[str, str]], center: st
         fontSize=10, dy=10, opacity=0.65, color=ink).encode(text="t:N", x=alt.value(middle), y=alt.value(middle))
     chart = (arcs + headline + sub).properties(
         width=DONUT_SIZE, height=DONUT_SIZE, padding={"top": 4, "bottom": 4, "left": 4, "right": 4},
-    ).configure_view(stroke=None)
+    ).configure_view(stroke=None).configure(background="transparent")  # let the card tint show through
     legend = [f":small[:{color}[●] {name} **{counts[key]}**]" for _, key, name, color in present]
     return chart, legend
 
 
-def donut_card(title: str, icon: str, donut_parts, alt_text: str, footnote: str) -> None:
+# Premium palettes for the KPI tiles and chart cards; every run moves on to the next one. Each tile is a
+# 135° gradient (start, end) carrying white text, so every start colour is dark enough for small labels
+# and every end colour keeps white values readable, in both light and dark mode. The donut slices keep
+# their fixed meaning (red = failed / regression) and are not recoloured.
+TILE_PALETTES = [
+    ("Royal", "#6366F1", [("#1E1B4B", "#4F46E5"), ("#2E1065", "#7C3AED"), ("#172554", "#2563EB"),
+                          ("#042F2E", "#0F766E"), ("#0F172A", "#475569")]),
+    ("Emerald & gold", "#059669", [("#022C22", "#047857"), ("#422006", "#A16207"), ("#052E16", "#15803D"),
+                                   ("#451A03", "#B45309"), ("#042F2E", "#0F766E")]),
+    ("Rose & plum", "#DB2777", [("#4A044E", "#A21CAF"), ("#4C0519", "#BE123C"), ("#3B0764", "#7E22CE"),
+                                ("#500724", "#BE185D"), ("#1E1B4B", "#6D28D9")]),
+    ("Ocean", "#0284C7", [("#082F49", "#0369A1"), ("#083344", "#0E7490"), ("#042F2E", "#0F766E"),
+                          ("#172554", "#1D4ED8"), ("#0C4A6E", "#0284C7")]),
+    ("Midnight & copper", "#EA580C", [("#0F172A", "#334155"), ("#431407", "#C2410C"), ("#1C1917", "#57534E"),
+                                      ("#422006", "#B45309"), ("#18181B", "#52525B")]),
+    ("Aurora", "#8B5CF6", [("#312E81", "#0E7490"), ("#4C1D95", "#BE185D"), ("#134E4A", "#4338CA"),
+                           ("#831843", "#C2410C"), ("#0C4A6E", "#7C3AED")]),
+]
+
+
+def next_palette() -> int:
+    """Index of the palette for a new run: the one after the last run's (a random one for the first run)."""
+    last = st.session_state.get("palette")
+    return random.randrange(len(TILE_PALETTES)) if last is None else (last + 1) % len(TILE_PALETTES)
+
+
+def tile_styles(index: int) -> str:
+    """CSS for the keyed KPI tiles (kpi_0..kpi_4) and chart cards (card_0..card_2) in one palette."""
+    _, accent, gradients = TILE_PALETTES[index]
+    css = [
+        """[class*="st-key-kpi_"] { border-radius: 14px; padding: 16px 18px;
+             border: 1px solid rgba(255,255,255,.10); transition: background .5s ease, box-shadow .5s ease; }
+           [class*="st-key-kpi_"] [data-testid="stMetricLabel"],
+           [class*="st-key-kpi_"] [data-testid="stMetricLabel"] p { color: rgba(255,255,255,.86) !important; }
+           [class*="st-key-kpi_"] [data-testid="stMetricValue"] { color: #FFFFFF !important; }
+           [class*="st-key-kpi_"] [data-testid="stMetricDelta"] { color: #FFFFFF !important;
+             background: rgba(255,255,255,.16) !important; }
+           [class*="st-key-kpi_"] svg { color: rgba(255,255,255,.86) !important; }""",
+        f"""[class*="st-key-card_"] {{ border-top: 3px solid {accent} !important;
+             background: linear-gradient(180deg, color-mix(in srgb, {accent} 10%, transparent) 0%, transparent 45%);
+             transition: background .5s ease; }}""",
+    ]
+    for i, (start, end) in enumerate(gradients):
+        css.append(f""".st-key-kpi_{i} {{ background: linear-gradient(135deg, {start} 0%, {end} 100%);
+             box-shadow: 0 10px 24px -14px {end}; }}""")
+    return "<style>" + "\n".join(css) + "</style>"
+
+
+def donut_card(title: str, icon: str, donut_parts, alt_text: str, footnote: str, key: str) -> None:
     """Bordered card: heading, ring with a vertical legend beside it, one-line footnote.
 
     The legend is a column next to the ring rather than a row under it, so the card height does not
     depend on the number of slices and the footnotes line up across cards.
     """
-    with st.container(border=True, height="stretch", gap="small"):
+    with st.container(border=True, height="stretch", gap="small", key=key):
         st.markdown(f"{icon} **{title}**")
         # Legend sits beside the ring; on narrow cards it wraps below instead of clipping.
         with st.container(horizontal=True, horizontal_alignment="center", vertical_alignment="center",
@@ -193,6 +242,7 @@ if run_clicked:
     st.session_state.results = {"legacy": legacy_result, "newgen": newgen_result}
     st.session_state.comparison = compare(legacy_result, newgen_result)  # once per run, not on every rerun
     st.session_state.run_started = started
+    st.session_state.palette = next_palette()  # a new premium tile palette for every run
     st.session_state.opened_run = None  # a fresh run, not one reopened from the history
     try:
         st.session_state.run_id = save_run(st.session_state.results, sources, st.session_state.comparison, started)
@@ -291,6 +341,9 @@ with st.container(horizontal=True, gap="small", vertical_alignment="center"):
     if st.session_state.get("opened_run"):
         st.badge(f"Reopened from history: run of {run_started:%Y-%m-%d %H:%M:%S}", icon=":material/history:",
                  color="gray")
+    if st.session_state.get("palette") is not None:
+        st.badge(f"Palette: {TILE_PALETTES[st.session_state.palette][0]}", icon=":material/palette:",
+                 color="gray", help="The tiles get a new premium palette on every run")
     # Built only when clicked (on a separate thread), so large reports never slow the page down.
     st.download_button("Excel report", lambda: excel_report(run_started, report_sources, results, rows),
                        report_name(run_started, "xlsx"), icon=":material/table_view:", on_click="ignore",
@@ -329,29 +382,36 @@ elif legacy.ok and newgen.ok:
 
 # KPI row: every tile has the same parts (label, value, one pill) so the row lines up. Context pills
 # are gray with no arrow; only the new-gen pass rate carries a real up/down change.
-k1, k2, k3, k4, k5 = st.columns(5)
-context = {"border": True, "height": "stretch", "delta_color": "off", "delta_arrow": "off"}
-k1.metric("Input cases", len(rows), f"{diff_total} differ", **context)
-k2.metric("Regressions", counts[REGRESSION], "pass → fail", **context)
-k3.metric("Fixed", counts[FIXED], "fail → pass", **context)
-k4.metric("Legacy pass rate", f"{pass_rate(lc):.1f}%", f"{lc['passed']} of {lc['total']}", **context)
-k5.metric("New gen pass rate", f"{pass_rate(nc):.1f}%", f"{pass_rate(nc) - pass_rate(lc):+.1f} pts",
-          border=True, height="stretch", help="Change in percentage points vs legacy")
+palette = st.session_state.get("palette")
+if palette is None:  # e.g. the first page load after an app restart
+    palette = st.session_state.palette = next_palette()
+st.html(tile_styles(palette))
+tiles = [
+    ("Input cases", len(rows), f"{diff_total} differ", {}),
+    ("Regressions", counts[REGRESSION], "pass → fail", {}),
+    ("Fixed", counts[FIXED], "fail → pass", {}),
+    ("Legacy pass rate", f"{pass_rate(lc):.1f}%", f"{lc['passed']} of {lc['total']}", {}),
+    ("New gen pass rate", f"{pass_rate(nc):.1f}%", f"{pass_rate(nc) - pass_rate(lc):+.1f} pts",
+     {"delta_arrow": "auto", "help": "Change in percentage points vs legacy"}),
+]
+for i, (column, (label, value, pill, extra)) in enumerate(zip(st.columns(5), tiles)):
+    with column.container(key=f"kpi_{i}", height="stretch"):
+        st.metric(label, value, pill, **{"delta_color": "off", "delta_arrow": "off", "height": "stretch", **extra})
 
 # Donut cards
 c1, c2, c3 = st.columns(3)
 with c1:
     donut_card("Legacy", ":material/history:", donut(lc, STATUS_SLICES, f"{pass_rate(lc):.0f}%", "pass rate"),
                "Legacy test outcomes",
-               f"{lc['passed']} of {lc['total']} passed{bulk_note(lc)} · run time {legacy.duration:.1f}s")
+               f"{lc['passed']} of {lc['total']} passed{bulk_note(lc)} · run time {legacy.duration:.1f}s", "card_0")
 with c2:
     donut_card("New gen", ":material/rocket_launch:",
                donut(nc, STATUS_SLICES, f"{pass_rate(nc):.0f}%", "pass rate"), "New-gen test outcomes",
-               f"{nc['passed']} of {nc['total']} passed{bulk_note(nc)} · run time {newgen.duration:.1f}s")
+               f"{nc['passed']} of {nc['total']} passed{bulk_note(nc)} · run time {newgen.duration:.1f}s", "card_1")
 with c3:
     donut_card("Comparison", ":material/compare_arrows:",
                donut(counts, CATEGORY_SLICES, str(diff_total), "differ" if diff_total != 1 else "differs"),
-               "Comparison of results by input case", f"{diff_total} of {len(rows)} input cases differ")
+               "Comparison of results by input case", f"{diff_total} of {len(rows)} input cases differ", "card_2")
 
 
 def to_frame(items: list[Comparison]) -> pd.DataFrame:
