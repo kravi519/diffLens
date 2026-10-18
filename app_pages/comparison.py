@@ -218,6 +218,17 @@ legacy_form, legacy_status = github_form("legacy", "Legacy source", LEGACY_REPO)
 newgen_form, newgen_status = github_form("newgen", "New-gen source", NEWGEN_REPO)
 SOURCE_STATUS = {"legacy": legacy_status, "newgen": newgen_status}
 
+st.sidebar.divider()
+run_clicked = st.sidebar.button("Run tests", icon=":material/play_arrow:", key="run_tests", width="stretch")
+# A light button: pale blue with dark blue text, readable on both the light and the dark sidebar.
+st.html("""<style>
+  .st-key-run_tests button { background: #DBEAFE; color: #1E3A8A; border: 1px solid #93C5FD;
+                             font-weight: 600; transition: background .2s ease, border-color .2s ease; }
+  .st-key-run_tests button:hover { background: #BFDBFE; border-color: #60A5FA; color: #1E3A8A; }
+  .st-key-run_tests button:active, .st-key-run_tests button:focus-visible { background: #BFDBFE;
+                             color: #1E3A8A; border-color: #3B82F6; }
+</style>""")
+
 
 def fetch_source(label: str, form: dict) -> SourceResult:
     return resolve_source(label, form["gh_url"], form["gh_ref"], form["gh_dir"],
@@ -235,8 +246,6 @@ def build_config(label: str, root: Path) -> ProjectConfig:
 st.title(":material/search_insights: DiffLens")
 st.caption("Legacy vs new-gen behaviour, input by input: runs each code base's own tests on the same input "
            "cases and shows exactly where the results differ.")
-
-run_clicked = st.button("Run tests", icon=":material/play_arrow:", type="primary")
 
 if run_clicked:
     started = datetime.now()
@@ -328,7 +337,7 @@ def landing_page() -> None:
                    "converts to a DTO and saves it to an in-memory database. New gen adds SR2025 rules "
                    "and carries one deliberate migration bug.")
 
-    st.info("Click **Run tests** above to compare the two code bases.", icon=":material/lightbulb:")
+    st.info("Click **Run tests** in the left panel to compare the two code bases.", icon=":material/lightbulb:")
     st.page_link("app_pages/input_files.py", label="Browse all input cases and messages fed to both sides",
                  icon=":material/folder_open:")
 

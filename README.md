@@ -25,7 +25,7 @@ with **its own test suite**, then compares the results input by input in a Strea
    streamlit run app.py
    ```
 
-Click **▶️ Run tests** on the Comparison page.
+Click **▶️ Run tests** in the left panel of the Comparison page.
 
 **Streamlit Community Cloud:** `packages.txt` installs a JDK (`default-jdk-headless`) on deploy, since
 the cloud image has only Python. The JUnit launcher is downloaded into `lib/` on the first run.

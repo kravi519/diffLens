@@ -63,7 +63,7 @@ st.caption(f"Every comparison run is saved here automatically (the newest {MAX_R
 
 runs = list_runs()
 if not runs:
-    st.info("No runs yet. Click **Run tests** on the Comparison page; each run is saved here.",
+    st.info("No runs yet. Click **Run tests** in the left panel of the Comparison page; each run is saved here.",
             icon=":material/history_toggle_off:")
     st.page_link("app_pages/comparison.py", label="Go to Comparison", icon=":material/compare_arrows:")
     st.stop()
