@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import re
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 from pathlib import Path
@@ -23,9 +24,9 @@ from comparator.source import CACHED, FALLBACK, GITHUB, SourceResult, resolve_so
 HERE = Path(__file__).resolve().parent.parent  # project root (this page lives in app_pages/)
 SAMPLE = HERE / "sample"
 SIDE_NAMES = {"legacy": "Legacy", "newgen": "New gen"}
-# GitHub sources: (repository URL, branch, project folder in the repo). Change them here to compare other code.
-LEGACY_REPO = ("https://github.com/kravi519/LegacyCode", "main", "legacy")
-NEWGEN_REPO = ("https://github.com/kravi519/NewGenCode", "main", "newgen")
+# Default GitHub sources (repository URL, branch), shown in the left panel where they can be changed.
+LEGACY_REPO = ("https://github.com/kravi519/LegacyCode", "main")
+NEWGEN_REPO = ("https://github.com/kravi519/NewGenCode", "main")
 # Bundled copies: used when no GitHub URL is given or GitHub cannot be reached.
 LEGACY_ROOT = SAMPLE / "legacy"
 NEWGEN_ROOT = SAMPLE / "newgen"
@@ -135,13 +136,26 @@ INPUTS_DIR = SAMPLE / "inputs"
 TIMEOUT = 900  # seconds per suite
 
 
-def github_source(repo: tuple[str, str, str]) -> dict:
-    url, ref, folder = repo
-    return {"gh_url": url, "gh_ref": ref, "gh_dir": folder}
+def github_form(label: str, title: str, default_repo: tuple[str, str]) -> tuple[dict, st.delta_generator.DeltaGenerator]:
+    """Repository and branch/commit fields for one side, plus a slot that shows what the last run used."""
+    default_url, default_ref = default_repo
+    st.sidebar.subheader(f":material/cloud_download: {title}")
+    form = {
+        "gh_url": st.sidebar.text_input(
+            "Repository", default_url, key=f"{label}_gh_url", placeholder="https://github.com/org/repo",
+            help="The project folder is found automatically (the one with src/main/java). To pick one, use "
+                 "https://github.com/org/repo/tree/<branch>/<folder>. If GitHub cannot be reached, the "
+                 f"bundled copy in sample/{label} is used."),
+        "gh_ref": st.sidebar.text_input("Branch, tag or commit", default_ref, key=f"{label}_gh_ref",
+                                        placeholder="default branch"),
+        "gh_dir": "",
+    }
+    return form, st.sidebar.container()
 
 
-legacy_form = github_source(LEGACY_REPO)
-newgen_form = github_source(NEWGEN_REPO)
+legacy_form, legacy_status = github_form("legacy", "Legacy source", LEGACY_REPO)
+newgen_form, newgen_status = github_form("newgen", "New-gen source", NEWGEN_REPO)
+SOURCE_STATUS = {"legacy": legacy_status, "newgen": newgen_status}
 
 
 def fetch_source(label: str, form: dict) -> SourceResult:
@@ -184,6 +198,26 @@ if run_clicked:
         st.session_state.run_id = save_run(st.session_state.results, sources, st.session_state.comparison, started)
     except OSError as e:  # the run is still shown; it just won't appear in the history
         st.toast(f"Could not save this run to the history: {e}", icon=":material/warning:")
+
+
+def show_source_status(source: SourceResult, slot) -> None:
+    """Under a side's fields in the left panel: what the last run loaded (commit, folder) or why GitHub failed."""
+    commit = re.search(r"commit ([0-9a-f]{7})", source.detail)
+    folder = source.root.name
+    with slot:
+        if source.origin == GITHUB:
+            st.caption(":material/cloud_done: Loaded from GitHub" + (f" · commit `{commit.group(1)}`" if commit else "")
+                       + f" · folder `{folder}`")
+        elif source.origin == CACHED:
+            st.warning(source.detail, title="Using the last downloaded copy", icon=":material/cloud_sync:")
+        elif source.origin == FALLBACK:
+            st.warning(source.detail, title="GitHub could not be used", icon=":material/cloud_off:")
+        else:
+            st.caption(f":material/folder: Bundled copy `{source.root}`")
+
+
+for source in st.session_state.get("sources", {}).values():
+    show_source_status(source, SOURCE_STATUS[source.label])
 
 
 # ---------------------------------------------------------------- results
@@ -242,26 +276,6 @@ if not results or len(results) < 2:
     st.stop()
 
 legacy, newgen = results["legacy"], results["newgen"]
-
-# Where each side's code came from: GitHub, a cached download, a local folder, or the fallback.
-SOURCE_BADGES = {
-    GITHUB: ("GitHub", ":material/cloud_done:", "green"),
-    CACHED: ("GitHub (cached)", ":material/cloud_sync:", "blue"),
-    FALLBACK: ("Prebuilt fallback", ":material/cloud_off:", "orange"),
-}
-for source in st.session_state.get("sources", {}).values():
-    if source.origin == FALLBACK:
-        st.warning(source.detail, title=f"{SIDE_NAMES[source.label]}: GitHub could not be used",
-                   icon=":material/cloud_off:")
-    elif source.origin == CACHED and "download failed" in source.detail:
-        st.warning(source.detail, title=f"{SIDE_NAMES[source.label]}: using the last downloaded copy",
-                   icon=":material/cloud_sync:")
-with st.container(horizontal=True, gap="medium", vertical_alignment="center"):
-    for source in st.session_state.get("sources", {}).values():
-        text, icon, color = SOURCE_BADGES.get(source.origin, ("Local folder", ":material/folder:", "gray"))
-        st.badge(f"{SIDE_NAMES[source.label]}: {text}", icon=icon, color=color)
-        where = source.detail if source.origin in (GITHUB, CACHED) else str(source.root)
-        st.caption(where.split(" (")[0] if source.origin == CACHED else where, width="content")
 
 for r in (legacy, newgen):
     if not r.ok:

@@ -188,12 +188,17 @@ reports you want to keep.
 
 ### Getting the code: GitHub with a bundled fallback
 
-Both sides come from **GitHub**: legacy from [kravi519/LegacyCode](https://github.com/kravi519/LegacyCode)
-(folder `legacy`) and new gen from [kravi519/NewGenCode](https://github.com/kravi519/NewGenCode) (folder
-`newgen`), branch `main`. The repositories are set in code, not in the UI: to compare other code, change
-`LEGACY_REPO` and `NEWGEN_REPO` (repository URL, branch/tag/commit, project folder) at the top of
-`app_pages/comparison.py`. DiffLens downloads a zip snapshot through the GitHub API, so git is not needed;
-private repositories need the `GITHUB_TOKEN` environment variable.
+Both sides come from **GitHub**. The left panel of the Comparison page has, for each side, a
+**Repository** field and a **Branch, tag or commit** field, pre-filled with
+[kravi519/LegacyCode](https://github.com/kravi519/LegacyCode) and
+[kravi519/NewGenCode](https://github.com/kravi519/NewGenCode) on `main`. Enter a commit id to compare an
+exact version. The project folder is found automatically: the repository root if it has `src/main/java`,
+else the one folder that does (`legacy/`, `newgen/`). For a repository with several Java projects, pick
+one with a `https://github.com/org/repo/tree/<branch>/<folder>` URL.
+
+DiffLens downloads a zip snapshot through the GitHub API, so git is not needed; private repositories need
+the `GITHUB_TOKEN` environment variable. After a run, the left panel shows under each side what was
+loaded (commit and folder), or why GitHub could not be used.
 
 If GitHub cannot be used (no network, wrong URL, missing branch or folder, no access), DiffLens says why
 and falls back automatically:
@@ -201,8 +206,7 @@ and falls back automatically:
 1. to the last downloaded copy of that repository (cached under `.work/repos/`), if there is one;
 2. otherwise to the bundled copies in `sample/legacy` and `sample/newgen`.
 
-After a run, a row under *Run tests* shows which source each side used. Set a repository URL to `""` to
-always use the bundled copy.
+Clear a side's Repository field to always use its bundled copy.
 
 ### Build tools
 

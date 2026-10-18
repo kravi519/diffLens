@@ -178,10 +178,28 @@ def _rename_with_retry(src: Path, dst: Path, attempts: int = 10) -> None:
 def _project_root(repo: GitHubRepo, dest: Path) -> Path:
     tops = [p for p in dest.iterdir() if p.is_dir()]  # the zipball wraps everything in owner-repo-<sha>/
     root = tops[0] if len(tops) == 1 else dest
-    target = root / repo.subdir if repo.subdir else root
-    if not target.is_dir():
-        raise SourceError(f"folder '{repo.subdir}' does not exist in {repo.owner}/{repo.repo}")
-    return target
+    if repo.subdir:
+        target = root / repo.subdir
+        if not target.is_dir():
+            raise SourceError(f"folder '{repo.subdir}' does not exist in {repo.owner}/{repo.repo}")
+        return target
+    return _find_project(repo, root)
+
+
+def _find_project(repo: GitHubRepo, root: Path) -> Path:
+    """No folder given: use the repository root if it is a Java project, else the one folder (up to two
+    levels down) that holds src/main/java, e.g. legacy/ in a repository with legacy/src/main/java."""
+    if (root / "src" / "main" / "java").is_dir():
+        return root
+    found = sorted({p.parents[2] for depth in ("*", "*/*") for p in root.glob(f"{depth}/src/main/java")
+                    if p.is_dir()})
+    if len(found) == 1:
+        return found[0]
+    if found:
+        names = ", ".join(p.relative_to(root).as_posix() for p in found)
+        raise SourceError(f"{repo.owner}/{repo.repo} has several Java projects ({names}); pick one with a "
+                          f"https://github.com/{repo.owner}/{repo.repo}/tree/<branch>/<folder> URL")
+    return root
 
 
 def fetch_github(url: str, ref: str = "", subdir: str = "", token: str = "",
@@ -198,7 +216,7 @@ def fetch_github(url: str, ref: str = "", subdir: str = "", token: str = "",
             return _project_root(repo, dest), f"{repo.name} (latest commit {commit[:7]}, already downloaded)", False
         try:
             _download(repo, token, dest, commit)
-            return _project_root(repo, dest), repo.name, False
+            return _project_root(repo, dest), repo.name + (f" (commit {commit[:7]})" if commit else ""), False
         except SourceError as e:
             if not (dest / COMPLETE_MARKER).exists():
                 raise
