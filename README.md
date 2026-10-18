@@ -188,7 +188,7 @@ reports you want to keep.
 ### Getting the code: GitHub with a bundled fallback
 
 Both sides come from **GitHub**. The left panel of the Comparison page has, for each side, a
-**Repository** field (`owner/repo`, or a full GitHub URL) and a **Branch** field (branch, tag or commit
+**Repository** field (`owner/repo`, or a full GitHub URL) with a **Branch, tag or commit** field below it (commit
 id), pre-filled with [kravi519/LegacyCode](https://github.com/kravi519/LegacyCode) and
 [kravi519/NewGenCode](https://github.com/kravi519/NewGenCode) on `main`. The project folder is found
 automatically: the repository root if it has `src/main/java`, else the one folder that does (`legacy/`,

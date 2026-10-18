@@ -198,20 +198,19 @@ TIMEOUT = 900  # seconds per suite
 
 
 def github_form(label: str, title: str, icon: str, default_repo: tuple[str, str]):
-    """Compact source block for one side: a bold title, then repository and branch on one row, then a
-    slot that shows what the last run loaded. Returns (form values, status slot)."""
+    """Compact source block for one side: a bold title, the repository, the branch below it, then a slot
+    that shows what the last run loaded. Returns (form values, status slot)."""
     box = st.sidebar.container(gap="xxsmall", key=f"source_{label}")
     box.markdown(f"{icon} **{title}**")
-    repo_col, ref_col = box.columns([3, 1], gap="xsmall")
     default_url, default_ref = default_repo
     form = {
-        "gh_url": repo_col.text_input(
+        "gh_url": box.text_input(
             "Repository", default_url, key=f"{label}_gh_url", placeholder="owner/repo",
-            help="owner/repo or a full GitHub URL; Branch takes a branch, tag or commit id. The project folder "
-                 "is found automatically (the one with src/main/java); to pick one, use "
-                 "owner/repo/tree/<branch>/<folder>. If GitHub cannot be reached, the bundled copy in "
-                 f"sample/{label} is used."),
-        "gh_ref": ref_col.text_input("Branch", default_ref, key=f"{label}_gh_ref", placeholder="default"),
+            help="owner/repo or a full GitHub URL. The project folder is found automatically (the one with "
+                 "src/main/java); to pick one, use owner/repo/tree/<branch>/<folder>. If GitHub cannot be "
+                 f"reached, the bundled copy in sample/{label} is used."),
+        "gh_ref": box.text_input("Branch, tag or commit", default_ref, key=f"{label}_gh_ref",
+                                 placeholder="default branch"),
         "gh_dir": "",
     }
     return form, box.container()
@@ -230,7 +229,7 @@ st.html("""<style>
   .st-key-compare_now button:hover { background: #BFDBFE; border-color: #60A5FA; color: #1E3A8A; }
   .st-key-compare_now button:active, .st-key-compare_now button:focus-visible { background: #BFDBFE;
                                color: #1E3A8A; border-color: #3B82F6; }
-  /* Narrow sidebar: slimmer padding and text so a full owner/repo name fits in the source fields. */
+  /* Slimmer source fields keep the left panel compact. */
   [class*="st-key-source_"] input { padding-left: 8px; padding-right: 8px; font-size: .85rem; }
 </style>""")
 
