@@ -150,7 +150,6 @@ against a fresh virtual DB) are in `sample/inputs/pacs008.csv`.
 
 | Area | Content |
 |---|---|
-| Verdict banner | Regressions found / differences / identical |
 | Metrics | Total, passed, failed, errors, skipped, pass rate and run time for each side, with deltas |
 | Report downloads | **Excel report** and **HTML report** of the run (see below) |
 | 🔀 Differences | Only the input cases whose result differs |

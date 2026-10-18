@@ -358,9 +358,6 @@ with st.container(horizontal=True, gap="small", vertical_alignment="center"):
     if st.session_state.get("opened_run"):
         st.badge(f"Reopened from history: run of {run_started:%Y-%m-%d %H:%M:%S}", icon=":material/history:",
                  color="gray")
-    if st.session_state.get("palette") is not None:
-        st.badge(f"Palette: {TILE_PALETTES[st.session_state.palette][0]}", icon=":material/palette:",
-                 color="gray", help="The tiles get a new premium palette on every run")
     # Built only when clicked (on a separate thread), so large reports never slow the page down.
     st.download_button("Excel report", lambda: excel_report(run_started, report_sources, results, rows),
                        report_name(run_started, "xlsx"), icon=":material/table_view:", on_click="ignore",
@@ -383,19 +380,6 @@ def bulk_note(c: dict[str, int]) -> str:
 def pass_rate(c: dict[str, int]) -> float:
     return c["passed"] / c["total"] * 100 if c["total"] else 0.0
 
-
-# Verdict
-if counts[REGRESSION]:
-    st.error("Tests that pass on legacy fail on new gen. Review them in the differences table below.",
-             title=f"{counts[REGRESSION]} regression{'s' if counts[REGRESSION] != 1 else ''} found",
-             icon=":material/report:")
-elif diff_total:
-    st.warning("No regressions, but some results differ. Review them below.",
-               title=f"{diff_total} input case{'s' if diff_total != 1 else ''} differ",
-               icon=":material/warning:")
-elif legacy.ok and newgen.ok:
-    st.success("Both code bases return the same result for every input case.",
-               title="No differences", icon=":material/check_circle:")
 
 # KPI row: every tile has the same parts (label, value, one pill) so the row lines up. Context pills
 # are gray with no arrow; only the new-gen pass rate carries a real up/down change.
