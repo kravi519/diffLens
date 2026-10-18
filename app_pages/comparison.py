@@ -23,7 +23,7 @@ from comparator.source import CACHED, FALLBACK, GITHUB, SourceResult, resolve_so
 HERE = Path(__file__).resolve().parent.parent  # project root (this page lives in app_pages/)
 SAMPLE = HERE / "sample"
 SIDE_NAMES = {"legacy": "Legacy", "newgen": "New gen"}
-# Default GitHub sources: (repository URL, branch, project folder in the repo). Changeable in the sidebar.
+# GitHub sources: (repository URL, branch, project folder in the repo). Change them here to compare other code.
 LEGACY_REPO = ("https://github.com/kravi519/LegacyCode", "main", "legacy")
 NEWGEN_REPO = ("https://github.com/kravi519/NewGenCode", "main", "newgen")
 # Bundled copies: used when no GitHub URL is given or GitHub cannot be reached.
@@ -124,7 +124,7 @@ def donut_card(title: str, icon: str, donut_parts, alt_text: str, footnote: str)
         st.caption(footnote)
 
 
-# ---------------------------------------------------------------- sidebar configuration
+# ---------------------------------------------------------------- configuration
 
 # Fixed build settings: both sides are compiled with javac from these folders inside the project.
 SOURCE_DIRS = ["src/main/java"]
@@ -135,23 +135,13 @@ INPUTS_DIR = SAMPLE / "inputs"
 TIMEOUT = 900  # seconds per suite
 
 
-def github_form(label: str, title: str, default_repo: tuple[str, str, str]) -> dict:
-    default_url, default_ref, default_dir = default_repo
-    st.sidebar.subheader(f":material/cloud_download: {title}")
-    return {
-        "gh_url": st.sidebar.text_input("Repository URL", default_url, key=f"{label}_gh_url",
-                                        placeholder="https://github.com/org/repo",
-                                        help="A /tree/<branch>/<path> URL also works. If GitHub cannot be "
-                                             f"reached, the bundled copy in sample/{label} is used."),
-        "gh_ref": st.sidebar.text_input("Branch, tag or commit", default_ref, key=f"{label}_gh_ref",
-                                        placeholder="default branch"),
-        "gh_dir": st.sidebar.text_input("Project folder in the repo", default_dir, key=f"{label}_gh_dir",
-                                        placeholder="repository root"),
-    }
+def github_source(repo: tuple[str, str, str]) -> dict:
+    url, ref, folder = repo
+    return {"gh_url": url, "gh_ref": ref, "gh_dir": folder}
 
 
-legacy_form = github_form("legacy", "Legacy GitHub source", LEGACY_REPO)
-newgen_form = github_form("newgen", "New-gen GitHub source", NEWGEN_REPO)
+legacy_form = github_source(LEGACY_REPO)
+newgen_form = github_source(NEWGEN_REPO)
 
 
 def fetch_source(label: str, form: dict) -> SourceResult:
@@ -242,10 +232,7 @@ def landing_page() -> None:
                    "converts to a DTO and saves it to an in-memory database. New gen adds SR2025 rules "
                    "and carries one deliberate migration bug.")
 
-    st.info("The sample is pre-filled in the sidebar: downloaded from GitHub, or taken from `sample/legacy` and "
-            "`sample/newgen` when GitHub cannot be reached. Click **Run tests** above to compare, "
-            "or point the GitHub sources in the sidebar at your own legacy and new-gen repositories.",
-            icon=":material/lightbulb:")
+    st.info("Click **Run tests** above to compare the two code bases.", icon=":material/lightbulb:")
     st.page_link("app_pages/input_files.py", label="Browse all input cases and messages fed to both sides",
                  icon=":material/folder_open:")
 

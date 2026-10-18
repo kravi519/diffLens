@@ -25,7 +25,7 @@ with **its own test suite**, then compares the results input by input in a Strea
    streamlit run app.py
    ```
 
-The sidebar is pre-filled with the bundled sample. Click **▶️ Run tests**.
+Click **▶️ Run tests** on the Comparison page.
 
 **Streamlit Community Cloud:** `packages.txt` installs a JDK (`default-jdk-headless`) on deploy, since
 the cloud image has only Python. The JUnit launcher is downloaded into `lib/` on the first run.
@@ -188,23 +188,21 @@ reports you want to keep.
 
 ### Getting the code: GitHub with a bundled fallback
 
-Each side can come from **GitHub** or a **local folder**. By default both come from GitHub:
-legacy from [kravi519/LegacyCode](https://github.com/kravi519/LegacyCode) (folder `legacy`) and new gen
-from [kravi519/NewGenCode](https://github.com/kravi519/NewGenCode) (folder `newgen`), branch `main`.
-To use other code, edit *GitHub source* for a side in the sidebar: the repository URL, optionally a branch/tag/commit and the project folder inside the repo
-(`https://github.com/org/repo/tree/<branch>/<folder>` URLs fill those in too). DiffLens downloads a zip
-snapshot through the GitHub API, so git is not needed; private repositories need a *GitHub access token*
-(or the `GITHUB_TOKEN` environment variable).
+Both sides come from **GitHub**: legacy from [kravi519/LegacyCode](https://github.com/kravi519/LegacyCode)
+(folder `legacy`) and new gen from [kravi519/NewGenCode](https://github.com/kravi519/NewGenCode) (folder
+`newgen`), branch `main`. The repositories are set in code, not in the UI: to compare other code, change
+`LEGACY_REPO` and `NEWGEN_REPO` (repository URL, branch/tag/commit, project folder) at the top of
+`app_pages/comparison.py`. DiffLens downloads a zip snapshot through the GitHub API, so git is not needed;
+private repositories need the `GITHUB_TOKEN` environment variable.
 
 If GitHub cannot be used (no network, wrong URL, missing branch or folder, no access), DiffLens says why
 and falls back automatically:
 
 1. to the last downloaded copy of that repository (cached under `.work/repos/`), if there is one;
-2. otherwise to the side's **Local folder (prebuilt fallback)**, by default the bundled copies in
-   `sample/legacy` and `sample/newgen`.
+2. otherwise to the bundled copies in `sample/legacy` and `sample/newgen`.
 
-A row under *Run tests* shows which source each side used. Leave the URL blank to always use the local
-folder.
+After a run, a row under *Run tests* shows which source each side used. Set a repository URL to `""` to
+always use the bundled copy.
 
 ### Build tools
 
