@@ -80,7 +80,8 @@ def parse_github_url(url: str, ref: str = "", subdir: str = "") -> GitHubRepo:
     """Read owner/repo (and an optional /tree/<ref>/<path>) from a GitHub URL; explicit ref/subdir win."""
     match = _GITHUB_URL.match(url.strip())
     if not match:
-        raise SourceError(f"'{url.strip()}' is not a GitHub repository URL (expected owner/repo or https://github.com/owner/repo)")
+        raise SourceError(f"'{url.strip()}' is not a GitHub repository "
+                          "(expected owner/repo or https://github.com/owner/repo)")
     return GitHubRepo(
         owner=match["owner"],
         repo=match["repo"],

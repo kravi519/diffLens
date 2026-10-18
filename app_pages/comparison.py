@@ -282,7 +282,8 @@ def show_source_status(source: SourceResult, slot) -> None:
     folder = source.root.name
     with slot:
         if source.origin == GITHUB:
-            st.caption(":material/cloud_done: Loaded" + (f" `{commit.group(1)}`" if commit else "") + f" · `{folder}/`",
+            loaded = f" `{commit.group(1)}`" if commit else ""
+            st.caption(f":material/cloud_done: Loaded{loaded} · `{folder}/`",
                        help="Loaded from GitHub: commit and project folder")
         elif source.origin == CACHED:
             st.warning(source.detail, title="Using the last downloaded copy", icon=":material/cloud_sync:")
