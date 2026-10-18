@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BusMsg>
+  <AppHdr xmlns="urn:iso:std:iso:20022:tech:xsd:head.001.001.02">
+    <Fr><FIId><FinInstnId><BICFI>BANKDEFFXXX</BICFI></FinInstnId></FIId></Fr>
+    <To><FIId><FinInstnId><BICFI>CEDELULLXXX</BICFI></FinInstnId></FIId></To>
+    <BizMsgIdr>MSG-0001</BizMsgIdr>
+    <MsgDefIdr>pacs.008.001.08</MsgDefIdr>
+    <BizSvc>swift.cbprplus.03</BizSvc>
+    <CreDt>2026-01-26T10:00:00+01:00</CreDt>
+  </AppHdr>
+  <Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08">
+    <FIToFICstmrCdtTrf>
+      <GrpHdr>
+        <MsgId>MSG-0001</MsgId>
+        <CreDtTm>2026-01-26T10:00:00+01:00</CreDtTm>
+        <NbOfTxs>1</NbOfTxs>
+        <SttlmInf>
+          <SttlmMtd>INDA</SttlmMtd>
+          <SttlmAcct><Id><Othr><Id>12345</Id></Othr></Id></SttlmAcct>
+        </SttlmInf>
+      </GrpHdr>
+    </FIToFICstmrCdtTrf>
+  </Document>
+</BusMsg>
