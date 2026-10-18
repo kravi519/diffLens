@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime
 from pathlib import Path
 
 import altair as alt
@@ -14,7 +15,9 @@ from comparator.compare import (
     CATEGORY_LABELS, CHANGED, FIXED, ONLY_LEGACY, ONLY_NEWGEN, OUTPUT_DIFF, REGRESSION, SAME, Comparison,
     category_counts, compare, difference_causes,
 )
+from comparator.history import save_run
 from comparator.java_runner import ProjectConfig, RunResult, run_suite
+from comparator.report import excel_report, html_report, report_name
 from comparator.source import CACHED, FALLBACK, GITHUB, SourceResult, resolve_source
 
 HERE = Path(__file__).resolve().parent.parent  # project root (this page lives in app_pages/)
@@ -171,6 +174,7 @@ st.caption("Legacy vs new-gen behaviour, input by input: runs each code base's o
 run_clicked = st.button("Run tests", icon=":material/play_arrow:", type="primary")
 
 if run_clicked:
+    started = datetime.now()
     forms = {"legacy": legacy_form, "newgen": newgen_form}
     with ThreadPoolExecutor(max_workers=2) as pool:
         if any(f["gh_url"].strip() for f in forms.values()):
@@ -184,6 +188,12 @@ if run_clicked:
     st.session_state.sources = sources
     st.session_state.results = {"legacy": legacy_result, "newgen": newgen_result}
     st.session_state.comparison = compare(legacy_result, newgen_result)  # once per run, not on every rerun
+    st.session_state.run_started = started
+    st.session_state.opened_run = None  # a fresh run, not one reopened from the history
+    try:
+        st.session_state.run_id = save_run(st.session_state.results, sources, st.session_state.comparison, started)
+    except OSError as e:  # the run is still shown; it just won't appear in the history
+        st.toast(f"Could not save this run to the history: {e}", icon=":material/warning:")
 
 
 # ---------------------------------------------------------------- results
@@ -272,6 +282,23 @@ for r in (legacy, newgen):
                  icon=":material/error:")
 
 rows: list[Comparison] = st.session_state.get("comparison") or compare(legacy, newgen)
+run_started: datetime = st.session_state.get("run_started") or datetime.now()
+report_sources = {label: {"origin": s.origin, "detail": s.detail}
+                  for label, s in st.session_state.get("sources", {}).items()}
+
+with st.container(horizontal=True, gap="small", vertical_alignment="center"):
+    if st.session_state.get("opened_run"):
+        st.badge(f"Reopened from history: run of {run_started:%Y-%m-%d %H:%M:%S}", icon=":material/history:",
+                 color="gray")
+    # Built only when clicked (on a separate thread), so large reports never slow the page down.
+    st.download_button("Excel report", lambda: excel_report(run_started, report_sources, results, rows),
+                       report_name(run_started, "xlsx"), icon=":material/table_view:", on_click="ignore",
+                       mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                       help="Every case with both outputs, root causes, failures with stack traces, build logs")
+    st.download_button("HTML report", lambda: html_report(run_started, report_sources, results, rows),
+                       report_name(run_started, "html"), icon=":material/description:", on_click="ignore",
+                       mime="text/html", help="The same report as one web page: open, print or email it")
+    st.page_link("app_pages/run_history.py", label="Run history", icon=":material/history:")
 counts = category_counts(rows)
 lc, nc = legacy.counts(), newgen.counts()
 diff_total = len(rows) - counts[SAME]

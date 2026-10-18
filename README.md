@@ -152,7 +152,9 @@ against a fresh virtual DB) are in `sample/inputs/pacs008.csv`.
 |---|---|
 | Verdict banner | Regressions found / differences / identical |
 | Metrics | Total, passed, failed, errors, skipped, pass rate and run time for each side, with deltas |
+| Report downloads | **Excel report** and **HTML report** of the run (see below) |
 | 🔀 Differences | Only the input cases whose result differs |
+| 🔎 Root causes | Differing cases grouped by the output words only one side produced |
 | 📋 All tests | Every input case side by side with both outputs, with filters, search and CSV export |
 | 🔍 Failure details | Actual output, message and stack trace from both sides next to each other |
 | 📜 Build logs | Raw compiler / launcher / Maven / Gradle output |
@@ -160,6 +162,27 @@ against a fresh virtual DB) are in `sample/inputs/pacs008.csv`.
 Categories: 🔴 **Regression** (passes on legacy, fails on new gen) · 🟢 **Fixed** · 🟡 **Changed**
 (e.g. failed → error) · 🟠 **Output differs** (same status, different output for the same input) ·
 ➖/➕ only in one run · ⚪ same.
+
+## Run history and test reports
+
+Every run is saved automatically. The **Run history** page in the left panel lists the saved runs, newest
+first, with their status, case counts, regressions, fixes and pass rates. Select a run to see its numbers
+(with the change against the run before it) and to:
+
+* **Download the Excel report**: sheets *Summary*, *Differences*, *Root causes*, *All cases* (both
+  statuses, outputs, messages and timings per case), *Failures* (message and full stack trace of every
+  failing test) and one *Build log* sheet per side; filters and frozen headers on every sheet;
+* **Download the HTML report**: the same content as one web page that opens in any browser, prints
+  cleanly and can be attached to an email;
+* **Open in Comparison**: show the stored run on the Comparison page exactly as when it ran;
+* **Delete run**.
+
+The same two downloads are on the Comparison page after every run. Reports are built only when a button
+is clicked, so they never slow the page down.
+
+Runs are stored under `.work/history/` (about 50 KB each, compressed); the newest 50 are kept. On
+Streamlit Community Cloud that folder is cleared when the app restarts or redeploys, so download the
+reports you want to keep.
 
 ## Using your own projects
 
@@ -206,6 +229,9 @@ or keep one modern JDK and set `javac --release 8` for legacy (the sample does t
 app.py                      Streamlit entry point (navigation)
 app_pages/comparison.py     Comparison page: run both sides and compare
 app_pages/input_files.py    Input files page: open any input file from the left panel in a readable view
+app_pages/run_history.py    Run history page: saved runs, report downloads, reopen or delete a run
+comparator/history.py       save, list, load and prune runs under .work/history/
+comparator/report.py        Excel and HTML test reports for one run
 comparator/input_files.py   read CSV cases and flatten pacs.008 XML into plain-named fields
 tools/                      generate_pacs008_inputs.py (hand-written edge cases),
                             generate_bulk_inputs.py (pairwise + random bulk cases)
