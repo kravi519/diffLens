@@ -25,7 +25,7 @@ with **its own test suite**, then compares the results input by input in a Strea
    streamlit run app.py
    ```
 
-Click **▶️ Run tests** in the left panel of the Comparison page.
+Click **Compare now** in the left panel of the Comparison page.
 
 **Streamlit Community Cloud:** `packages.txt` installs a JDK (`default-jdk-headless`) on deploy, since
 the cloud image has only Python. The JUnit launcher is downloaded into `lib/` on the first run.
@@ -188,16 +188,16 @@ reports you want to keep.
 ### Getting the code: GitHub with a bundled fallback
 
 Both sides come from **GitHub**. The left panel of the Comparison page has, for each side, a
-**Repository** field and a **Branch, tag or commit** field, pre-filled with
-[kravi519/LegacyCode](https://github.com/kravi519/LegacyCode) and
-[kravi519/NewGenCode](https://github.com/kravi519/NewGenCode) on `main`. Enter a commit id to compare an
-exact version. The project folder is found automatically: the repository root if it has `src/main/java`,
-else the one folder that does (`legacy/`, `newgen/`). For a repository with several Java projects, pick
-one with a `https://github.com/org/repo/tree/<branch>/<folder>` URL.
+**Repository** field (`owner/repo`, or a full GitHub URL) and a **Branch** field (branch, tag or commit
+id), pre-filled with [kravi519/LegacyCode](https://github.com/kravi519/LegacyCode) and
+[kravi519/NewGenCode](https://github.com/kravi519/NewGenCode) on `main`. The project folder is found
+automatically: the repository root if it has `src/main/java`, else the one folder that does (`legacy/`,
+`newgen/`). For a repository with several Java projects, pick one with `owner/repo/tree/<branch>/<folder>`.
 
 DiffLens downloads a zip snapshot through the GitHub API, so git is not needed; private repositories need
 the `GITHUB_TOKEN` environment variable. After a run, the left panel shows under each side what was
-loaded (commit and folder), or why GitHub could not be used.
+loaded (commit and folder), or why GitHub could not be used. **Compare now** at the bottom of the
+panel starts a run.
 
 If GitHub cannot be used (no network, wrong URL, missing branch or folder, no access), DiffLens says why
 and falls back automatically:

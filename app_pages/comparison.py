@@ -26,9 +26,9 @@ from comparator.source import CACHED, FALLBACK, GITHUB, SourceResult, resolve_so
 HERE = Path(__file__).resolve().parent.parent  # project root (this page lives in app_pages/)
 SAMPLE = HERE / "sample"
 SIDE_NAMES = {"legacy": "Legacy", "newgen": "New gen"}
-# Default GitHub sources (repository URL, branch), shown in the left panel where they can be changed.
-LEGACY_REPO = ("https://github.com/kravi519/LegacyCode", "main")
-NEWGEN_REPO = ("https://github.com/kravi519/NewGenCode", "main")
+# Default GitHub sources (owner/repo, branch), shown in the left panel where they can be changed.
+LEGACY_REPO = ("kravi519/LegacyCode", "main")
+NEWGEN_REPO = ("kravi519/NewGenCode", "main")
 # Bundled copies: used when no GitHub URL is given or GitHub cannot be reached.
 LEGACY_ROOT = SAMPLE / "legacy"
 NEWGEN_ROOT = SAMPLE / "newgen"
@@ -197,36 +197,41 @@ INPUTS_DIR = SAMPLE / "inputs"
 TIMEOUT = 900  # seconds per suite
 
 
-def github_form(label: str, title: str, default_repo: tuple[str, str]) -> tuple[dict, st.delta_generator.DeltaGenerator]:
-    """Repository and branch/commit fields for one side, plus a slot that shows what the last run used."""
+def github_form(label: str, title: str, icon: str, default_repo: tuple[str, str]):
+    """Compact source block for one side: a bold title, then repository and branch on one row, then a
+    slot that shows what the last run loaded. Returns (form values, status slot)."""
+    box = st.sidebar.container(gap="xxsmall", key=f"source_{label}")
+    box.markdown(f"{icon} **{title}**")
+    repo_col, ref_col = box.columns([3, 1], gap="xsmall")
     default_url, default_ref = default_repo
-    st.sidebar.subheader(f":material/cloud_download: {title}")
     form = {
-        "gh_url": st.sidebar.text_input(
-            "Repository", default_url, key=f"{label}_gh_url", placeholder="https://github.com/org/repo",
-            help="The project folder is found automatically (the one with src/main/java). To pick one, use "
-                 "https://github.com/org/repo/tree/<branch>/<folder>. If GitHub cannot be reached, the "
-                 f"bundled copy in sample/{label} is used."),
-        "gh_ref": st.sidebar.text_input("Branch, tag or commit", default_ref, key=f"{label}_gh_ref",
-                                        placeholder="default branch"),
+        "gh_url": repo_col.text_input(
+            "Repository", default_url, key=f"{label}_gh_url", placeholder="owner/repo",
+            help="owner/repo or a full GitHub URL; Branch takes a branch, tag or commit id. The project folder "
+                 "is found automatically (the one with src/main/java); to pick one, use "
+                 "owner/repo/tree/<branch>/<folder>. If GitHub cannot be reached, the bundled copy in "
+                 f"sample/{label} is used."),
+        "gh_ref": ref_col.text_input("Branch", default_ref, key=f"{label}_gh_ref", placeholder="default"),
         "gh_dir": "",
     }
-    return form, st.sidebar.container()
+    return form, box.container()
 
 
-legacy_form, legacy_status = github_form("legacy", "Legacy source", LEGACY_REPO)
-newgen_form, newgen_status = github_form("newgen", "New-gen source", NEWGEN_REPO)
+legacy_form, legacy_status = github_form("legacy", "Legacy", ":material/history:", LEGACY_REPO)
+newgen_form, newgen_status = github_form("newgen", "New gen", ":material/rocket_launch:", NEWGEN_REPO)
 SOURCE_STATUS = {"legacy": legacy_status, "newgen": newgen_status}
 
-st.sidebar.divider()
-run_clicked = st.sidebar.button("Run tests", icon=":material/play_arrow:", key="run_tests", width="stretch")
+run_clicked = st.sidebar.button("Compare now", icon=":material/compare_arrows:", key="compare_now",
+                                width="stretch", help="Download both code bases, run their tests and compare")
 # A light button: pale blue with dark blue text, readable on both the light and the dark sidebar.
 st.html("""<style>
-  .st-key-run_tests button { background: #DBEAFE; color: #1E3A8A; border: 1px solid #93C5FD;
-                             font-weight: 600; transition: background .2s ease, border-color .2s ease; }
-  .st-key-run_tests button:hover { background: #BFDBFE; border-color: #60A5FA; color: #1E3A8A; }
-  .st-key-run_tests button:active, .st-key-run_tests button:focus-visible { background: #BFDBFE;
-                             color: #1E3A8A; border-color: #3B82F6; }
+  .st-key-compare_now button { background: #DBEAFE; color: #1E3A8A; border: 1px solid #93C5FD;
+                               font-weight: 600; transition: background .2s ease, border-color .2s ease; }
+  .st-key-compare_now button:hover { background: #BFDBFE; border-color: #60A5FA; color: #1E3A8A; }
+  .st-key-compare_now button:active, .st-key-compare_now button:focus-visible { background: #BFDBFE;
+                               color: #1E3A8A; border-color: #3B82F6; }
+  /* Narrow sidebar: slimmer padding and text so a full owner/repo name fits in the source fields. */
+  [class*="st-key-source_"] input { padding-left: 8px; padding-right: 8px; font-size: .85rem; }
 </style>""")
 
 
@@ -277,8 +282,8 @@ def show_source_status(source: SourceResult, slot) -> None:
     folder = source.root.name
     with slot:
         if source.origin == GITHUB:
-            st.caption(":material/cloud_done: Loaded from GitHub" + (f" · commit `{commit.group(1)}`" if commit else "")
-                       + f" · folder `{folder}`")
+            st.caption(":material/cloud_done: Loaded" + (f" `{commit.group(1)}`" if commit else "") + f" · `{folder}/`",
+                       help="Loaded from GitHub: commit and project folder")
         elif source.origin == CACHED:
             st.warning(source.detail, title="Using the last downloaded copy", icon=":material/cloud_sync:")
         elif source.origin == FALLBACK:
@@ -337,7 +342,7 @@ def landing_page() -> None:
                    "converts to a DTO and saves it to an in-memory database. New gen adds SR2025 rules "
                    "and carries one deliberate migration bug.")
 
-    st.info("Click **Run tests** in the left panel to compare the two code bases.", icon=":material/lightbulb:")
+    st.info("Click **Compare now** in the left panel to compare the two code bases.", icon=":material/lightbulb:")
     st.page_link("app_pages/input_files.py", label="Browse all input cases and messages fed to both sides",
                  icon=":material/folder_open:")
 

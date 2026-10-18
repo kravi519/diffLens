@@ -30,9 +30,10 @@ TIMEOUT = 60
 COMPLETE_MARKER = ".difflens-download"
 
 # https://github.com/owner/repo(.git)(/tree/<ref>(/<path>)) or git@github.com:owner/repo(.git)
+#   ... or just owner/repo(/tree/<ref>(/<path>)), the short form shown in the left panel
 _GITHUB_URL = re.compile(
-    r"^(?:https?://(?:www\.)?github\.com/|git@github\.com:)(?P<owner>[\w.-]+)/(?P<repo>[\w.-]+?)(?:\.git)?"
-    r"(?:/tree/(?P<ref>[^/]+)(?:/(?P<path>.+?))?)?/?$")
+    r"^(?:https?://(?:www\.)?github\.com/|github\.com/|git@github\.com:)?(?P<owner>[\w.-]+)/(?P<repo>[\w.-]+?)"
+    r"(?:\.git)?(?:/tree/(?P<ref>[^/]+)(?:/(?P<path>.+?))?)?/?$")
 
 GITHUB = "github"
 CACHED = "cached"
@@ -79,7 +80,7 @@ def parse_github_url(url: str, ref: str = "", subdir: str = "") -> GitHubRepo:
     """Read owner/repo (and an optional /tree/<ref>/<path>) from a GitHub URL; explicit ref/subdir win."""
     match = _GITHUB_URL.match(url.strip())
     if not match:
-        raise SourceError(f"'{url.strip()}' is not a GitHub repository URL (expected https://github.com/owner/repo)")
+        raise SourceError(f"'{url.strip()}' is not a GitHub repository URL (expected owner/repo or https://github.com/owner/repo)")
     return GitHubRepo(
         owner=match["owner"],
         repo=match["repo"],
