@@ -16,7 +16,7 @@ from anthropic import beta_tool
 from .compare import CATEGORY_LABELS, SAME, Comparison, category_counts, compare
 from .java_runner import ProjectConfig, RunResult, run_suite
 
-MODEL = "claude-opus-5-5"
+MODEL = "claude-haiku-5-5"
 MAX_FILE_CHARS = 60_000
 SOURCE_SUFFIXES = {".java", ".kt", ".xml", ".properties", ".yml", ".yaml", ".gradle", ".kts"}
 
@@ -43,9 +43,11 @@ Keep it concise and specific; quote short code snippets where they make the caus
 
 
 class ComparisonAgent:
-    def __init__(self, legacy: ProjectConfig, newgen: ProjectConfig, client: anthropic.Anthropic | None = None):
+    def __init__(self, legacy: ProjectConfig, newgen: ProjectConfig, client: anthropic.Anthropic | None = None,
+                 results: dict[str, RunResult] | None = None):
+        """results: runs that already exist (e.g. from the UI); run_test_suite reuses them instead of rebuilding."""
         self.configs = {"legacy": legacy, "newgen": newgen}
-        self.results: dict[str, RunResult] = {}
+        self.results: dict[str, RunResult] = dict(results or {})
         self.client = client or anthropic.Anthropic()
 
     # ---- helpers used by the tools -------------------------------------------------------
@@ -68,7 +70,8 @@ class ComparisonAgent:
             Args:
                 codebase: Which code base to test: "legacy" or "newgen".
             """
-            result = run_suite(agent._config(codebase))
+            config = agent._config(codebase)
+            result = agent.results.get(codebase) or run_suite(config)
             agent.results[codebase] = result
             summary = {
                 "codebase": codebase,
@@ -184,9 +187,6 @@ class ComparisonAgent:
             system=SYSTEM_PROMPT,
             thinking={"type": "adaptive"},
             output_config={"effort": "high"},
-            # On a safety-classifier decline, let the API retry on a fallback model automatically.
-            betas=["server-side-fallback-2026-07-01"],
-            fallbacks="default",
             tools=self._tools(),
             messages=[{"role": "user", "content": task}],
         )

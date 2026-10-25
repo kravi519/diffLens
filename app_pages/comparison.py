@@ -220,15 +220,19 @@ legacy_form, legacy_status = github_form("legacy", "Legacy", ":material/history:
 newgen_form, newgen_status = github_form("newgen", "New gen", ":material/rocket_launch:", NEWGEN_REPO)
 SOURCE_STATUS = {"legacy": legacy_status, "newgen": newgen_status}
 
-run_clicked = st.sidebar.button("Compare now", icon=":material/compare_arrows:", key="compare_now",
+run_clicked = st.sidebar.button("Compare", icon=":material/compare_arrows:", key="compare_now",
                                 width="stretch", help="Download both code bases, run their tests and compare")
-# A light button: pale blue with dark blue text, readable on both the light and the dark sidebar.
+# A premium button: indigo-to-blue gradient (#4338CA -> #2563EB -> #0EA5E9) with white text and icon.
 st.html("""<style>
-  .st-key-compare_now button { background: #DBEAFE; color: #1E3A8A; border: 1px solid #93C5FD;
-                               font-weight: 600; transition: background .2s ease, border-color .2s ease; }
-  .st-key-compare_now button:hover { background: #BFDBFE; border-color: #60A5FA; color: #1E3A8A; }
-  .st-key-compare_now button:active, .st-key-compare_now button:focus-visible { background: #BFDBFE;
-                               color: #1E3A8A; border-color: #3B82F6; }
+  .st-key-compare_now button { background: linear-gradient(135deg, #4338CA 0%, #2563EB 55%, #0EA5E9 100%);
+                               color: #FFFFFF; border: 1px solid rgba(255,255,255,.18); font-weight: 600;
+                               letter-spacing: .02em; box-shadow: 0 4px 14px rgba(37,99,235,.35);
+                               transition: transform .15s ease, box-shadow .2s ease, filter .2s ease; }
+  .st-key-compare_now button * { color: #FFFFFF; }
+  .st-key-compare_now button:hover { transform: translateY(-1px); filter: brightness(1.08); color: #FFFFFF;
+                                     box-shadow: 0 8px 22px rgba(37,99,235,.45); border-color: rgba(255,255,255,.3); }
+  .st-key-compare_now button:active, .st-key-compare_now button:focus-visible { transform: translateY(0);
+                               filter: brightness(.95); color: #FFFFFF; border-color: rgba(255,255,255,.4); }
   /* Slimmer source fields keep the left panel compact. */
   [class*="st-key-source_"] input { padding-left: 8px; padding-right: 8px; font-size: .85rem; }
 </style>""")
@@ -269,6 +273,7 @@ if run_clicked:
     st.session_state.run_started = started
     st.session_state.palette = next_palette()  # a new premium tile palette for every run
     st.session_state.opened_run = None  # a fresh run, not one reopened from the history
+    st.session_state.ai_report = None  # belongs to the previous run
     try:
         st.session_state.run_id = save_run(st.session_state.results, sources, st.session_state.comparison, started)
     except OSError as e:  # the run is still shown; it just won't appear in the history
@@ -342,7 +347,7 @@ def landing_page() -> None:
                    "converts to a DTO and saves it to an in-memory database. New gen adds SR2025 rules "
                    "and carries one deliberate migration bug.")
 
-    st.info("Click **Compare now** in the left panel to compare the two code bases.", icon=":material/lightbulb:")
+    st.info("Click **Compare** in the left panel to compare the two code bases.", icon=":material/lightbulb:")
     st.page_link("app_pages/input_files.py", label="Browse all input cases and messages fed to both sides",
                  icon=":material/folder_open:")
 
@@ -375,7 +380,36 @@ with st.container(horizontal=True, gap="small", vertical_alignment="center"):
     st.download_button("HTML report", lambda: html_report(run_started, report_sources, results, rows),
                        report_name(run_started, "html"), icon=":material/description:", on_click="ignore",
                        mime="text/html", help="The same report as one web page: open, print or email it")
+    # Needs the code bases of this run on disk, so it is off for runs reopened from the history.
+    live_sources = st.session_state.get("sources") or {}
+    can_explain = (not st.session_state.get("opened_run") and len(live_sources) == 2
+                   and all(s.root.exists() for s in live_sources.values()))
+    explain_clicked = st.button("Explain differences", icon=":material/auto_awesome:", disabled=not can_explain,
+                                help="Claude reads both code bases and writes a root-cause report. Uses the "
+                                     "Anthropic API (ANTHROPIC_API_KEY); costs tokens and can take a few minutes."
+                                if can_explain else "Run Compare first: this needs the code bases of a fresh run")
     st.page_link("app_pages/run_history.py", label="Run history", icon=":material/history:")
+
+if explain_clicked:
+    if not os.environ.get("ANTHROPIC_API_KEY"):
+        st.error("Set the ANTHROPIC_API_KEY environment variable and restart the app.", title="No API key",
+                 icon=":material/key:")
+    else:
+        from comparator.agent import ComparisonAgent  # imported here so the app runs without the anthropic package
+        agent = ComparisonAgent(*(build_config(label, live_sources[label].root) for label in ("legacy", "newgen")),
+                                results=results)
+        try:
+            with st.status("Claude is analysing the differences…", expanded=True) as progress:
+                st.session_state.ai_report = agent.run(lambda kind, text: st.write(
+                    f":material/build: `{text}`" if kind == "tool" else text))
+                progress.update(label="Analysis complete", state="complete", expanded=False)
+        except Exception as e:  # network, auth, rate limit: the rest of the page must keep working
+            st.session_state.ai_report = None
+            st.error(f"{type(e).__name__}: {e}", title="The analysis failed", icon=":material/error:")
+
+if st.session_state.get("ai_report"):
+    with st.expander("AI explanation of the differences", icon=":material/auto_awesome:", expanded=True):
+        st.markdown(st.session_state.ai_report)
 counts = category_counts(rows)
 lc, nc = legacy.counts(), newgen.counts()
 diff_total = len(rows) - counts[SAME]

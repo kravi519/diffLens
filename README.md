@@ -25,7 +25,7 @@ with **its own test suite**, then compares the results input by input in a Strea
    streamlit run app.py
    ```
 
-Click **Compare now** in the left panel of the Comparison page.
+Click **Compare** in the left panel of the Comparison page.
 
 **Streamlit Community Cloud:** `packages.txt` installs a JDK (`default-jdk-headless`) on deploy, since
 the cloud image has only Python. The JUnit launcher is downloaded into `lib/` on the first run.
@@ -196,7 +196,7 @@ automatically: the repository root if it has `src/main/java`, else the one folde
 
 DiffLens downloads a zip snapshot through the GitHub API, so git is not needed; private repositories need
 the `GITHUB_TOKEN` environment variable. After a run, the left panel shows under each side what was
-loaded (commit and folder), or why GitHub could not be used. **Compare now** at the bottom of the
+loaded (commit and folder), or why GitHub could not be used. **Compare** at the bottom of the
 panel starts a run.
 
 If GitHub cannot be used (no network, wrong URL, missing branch or folder, no access), DiffLens says why

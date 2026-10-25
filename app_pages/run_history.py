@@ -50,6 +50,7 @@ def open_in_comparison(run_id: str) -> None:
     st.session_state.run_started = record.started
     st.session_state.run_id = record.run_id
     st.session_state.opened_run = record.run_id
+    st.session_state.ai_report = None
     st.session_state.sources = {
         side: SourceResult(side, Path(s.get("root", "")), s.get("origin", ""), s.get("detail", ""))
         for side, s in record.sources.items()}
@@ -63,7 +64,7 @@ st.caption(f"Every comparison run is saved here automatically (the newest {MAX_R
 
 runs = list_runs()
 if not runs:
-    st.info("No runs yet. Click **Compare now** in the left panel of the Comparison page; each run is saved here.",
+    st.info("No runs yet. Click **Compare** in the left panel of the Comparison page; each run is saved here.",
             icon=":material/history_toggle_off:")
     st.page_link("app_pages/comparison.py", label="Go to Comparison", icon=":material/compare_arrows:")
     st.stop()

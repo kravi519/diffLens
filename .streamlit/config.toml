@@ -17,8 +17,6 @@ headingFontWeights = [700, 600, 600, 600, 500, 500]
 metricValueFontSize = "1.5rem"
 metricValueFontWeight = 600
 linkUnderline = false
-paddingTop = "1rem"
-paddingBottom = "3rem"
 
 [theme.light]
 primaryColor = "#1D4ED8"
@@ -38,7 +36,6 @@ violetColor = "#7C3AED"
 grayColor = "#64748B"
 dataframeBorderColor = "#E2E8F0"
 dataframeHeaderBackgroundColor = "#F1F5F9"
-dataframeHeaderTextColor = "#0F172A"
 
 [theme.dark]
 primaryColor = "#2563EB"
@@ -58,11 +55,6 @@ violetColor = "#A78BFA"
 grayColor = "#94A3B8"
 dataframeBorderColor = "#334155"
 dataframeHeaderBackgroundColor = "#1E293B"
-dataframeHeaderTextColor = "#F8FAFC"
-
-[theme.sidebar]
-paddingTop = "0.5rem"
-paddingBottom = "1.5rem"
 
 [theme.light.sidebar]
 backgroundColor = "#F8FAFC"
