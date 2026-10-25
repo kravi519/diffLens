@@ -51,6 +51,8 @@ def open_in_comparison(run_id: str) -> None:
     st.session_state.run_id = record.run_id
     st.session_state.opened_run = record.run_id
     st.session_state.ai_report = None
+    st.session_state.ai_fixes = []
+    st.session_state.run_seconds = None  # the time of the run was not kept with the history record
     st.session_state.sources = {
         side: SourceResult(side, Path(s.get("root", "")), s.get("origin", ""), s.get("detail", ""))
         for side, s in record.sources.items()}

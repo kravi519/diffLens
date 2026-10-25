@@ -14,6 +14,7 @@ import anthropic
 from anthropic import beta_tool
 
 from .compare import CATEGORY_LABELS, SAME, Comparison, category_counts, compare
+from .fixes import check_fix
 from .java_runner import ProjectConfig, RunResult, run_suite
 
 MODEL = "claude-haiku-5-5"
@@ -32,6 +33,10 @@ Work through it like this:
 both code bases until you can name the root cause. Point at the exact method and the code change \
 responsible. Do not guess when you can read the code.
 4. If a code base failed to build, explain the compile errors instead.
+5. For each failing input case or regression, read the source in the code base that fails and propose a fix \
+with propose_fix, naming the input case and using the exact text from read_source_file. Propose only source-code fixes, never changes to \
+tests. Propose a fix only when it is small and you are confident in it; anything bigger or unclear stays in \
+the report as a written suggestion.
 
 Finish with a markdown report with these sections:
 ## Verdict - one or two sentences: is the new gen code safe to ship as-is?
@@ -48,6 +53,7 @@ class ComparisonAgent:
         """results: runs that already exist (e.g. from the UI); run_test_suite reuses them instead of rebuilding."""
         self.configs = {"legacy": legacy, "newgen": newgen}
         self.results: dict[str, RunResult] = dict(results or {})
+        self.fixes: list[dict] = []  # proposed by propose_fix; nothing is written to the code bases
         self.client = client or anthropic.Anthropic()
 
     # ---- helpers used by the tools -------------------------------------------------------
@@ -163,7 +169,29 @@ class ComparisonAgent:
             numbered = "\n".join(f"{i:5d}  {line}" for i, line in enumerate(text.splitlines(), 1))
             return numbered
 
-        return [run_test_suite, compare_results, get_test_details, list_source_files, read_source_file]
+        @beta_tool
+        def propose_fix(case_id: str, codebase: str, path: str, old_text: str, new_text: str, reason: str) -> str:
+            """Propose one small, exact fix to a source file for one input case. Nothing is written: the
+            developer reviews the proposal and makes the change. old_text must match the file exactly once.
+
+            Args:
+                case_id: The input case the fix is for, e.g. "P8-01", as shown in compare_results.
+                codebase: "legacy" or "newgen".
+                path: Source file path relative to the project root, as listed by list_source_files.
+                old_text: The exact text to replace, copied from read_source_file.
+                new_text: The replacement text.
+                reason: One sentence on why this fixes the difference.
+            """
+            root = agent._config(codebase).root
+            problem = check_fix(root, path, old_text, new_text)
+            if problem:
+                return f"Not recorded: {problem}"
+            agent.fixes.append({"case_id": case_id, "codebase": codebase, "path": path, "old_text": old_text,
+                                "new_text": new_text, "reason": reason})
+            return f"Recorded fix {len(agent.fixes)} for {path}."
+
+        return [run_test_suite, compare_results, get_test_details, list_source_files, read_source_file,
+                propose_fix]
 
     # ---- main loop -----------------------------------------------------------------------
 

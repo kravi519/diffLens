@@ -160,6 +160,10 @@ def tile_styles(index: int) -> str:
     for i, (start, end) in enumerate(gradients):
         css.append(f""".st-key-kpi_{i} {{ background: linear-gradient(135deg, {start} 0%, {end} 100%);
              box-shadow: 0 10px 22px -16px {accent}; }}""")
+    # The effort estimate tiles reuse the first three gradients of the palette.
+    for i, (start, end) in enumerate(gradients[:3]):
+        css.append(f""".st-key-kpi_est_{i} {{ background: linear-gradient(135deg, {start} 0%, {end} 100%);
+             box-shadow: 0 10px 22px -16px {accent}; }}""")
     return "<style>" + "\n".join(css) + "</style>"
 
 
@@ -219,6 +223,34 @@ def github_form(label: str, title: str, icon: str, default_repo: tuple[str, str]
 legacy_form, legacy_status = github_form("legacy", "Legacy", ":material/history:", LEGACY_REPO)
 newgen_form, newgen_status = github_form("newgen", "New gen", ":material/rocket_launch:", NEWGEN_REPO)
 SOURCE_STATUS = {"legacy": legacy_status, "newgen": newgen_status}
+# Left panel: each code base is a soft card with an accent edge. Colours are mixed from the text colour, so the
+# cards and fields read correctly in both the light and the dark theme.
+st.html("""<style>
+  [class*="st-key-source_"] { position: relative; border: 1px solid color-mix(in srgb, currentColor 14%, transparent);
+       border-radius: 16px; padding: 14px 16px 12px;
+       background: color-mix(in srgb, #2563EB 8%, transparent);
+       box-shadow: inset 3px 0 0 #2563EB, 0 12px 24px -20px rgba(37,99,235,.55);
+       transition: transform .2s ease, box-shadow .2s ease; }
+  [class*="st-key-source_"]:hover { transform: translateY(-1px);
+       box-shadow: inset 3px 0 0 #2563EB, 0 16px 28px -20px rgba(37,99,235,.6); }
+  /* Card titles: the brand gradient as text. */
+  [class*="st-key-source_"] [data-testid="stMarkdownContainer"] p { font-size: 1rem; letter-spacing: .01em; }
+  [class*="st-key-source_"] [data-testid="stMarkdownContainer"] strong {
+       background: linear-gradient(90deg, #4338CA, #0EA5E9); -webkit-background-clip: text;
+       background-clip: text; color: transparent; }
+  /* Nav: spaced rounded items; the current page gets a brand tint and an accent bar, the others stay plain. */
+  [data-testid="stSidebarNavLink"] { border-radius: 10px; margin: 2px 0; padding: 8px 12px;
+       background: transparent !important; transition: background .2s ease; }
+  [data-testid="stSidebarNavLink"]:hover { background: color-mix(in srgb, currentColor 6%, transparent) !important; }
+  [data-testid="stSidebarNavLink"][aria-current="page"] {
+       background: color-mix(in srgb, #2563EB 14%, transparent) !important;
+       box-shadow: inset 3px 0 0 #2563EB; font-weight: 600; }
+  [class*="st-key-source_"] [data-testid="stTextInput"] label p {
+       font-size: .72rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; opacity: .7; }
+  [class*="st-key-source_"] [data-testid="stTextInput"] input { border-radius: 10px; }
+  [class*="st-key-source_"] [data-testid="stTextInput"] input:focus {
+       box-shadow: 0 0 0 3px rgba(99,102,241,.25); }
+</style>""")
 
 run_clicked = st.sidebar.button("Compare", icon=":material/compare_arrows:", key="compare_now",
                                 width="stretch", help="Download both code bases, run their tests and compare")
@@ -274,10 +306,12 @@ if run_clicked:
     st.session_state.palette = next_palette()  # a new premium tile palette for every run
     st.session_state.opened_run = None  # a fresh run, not one reopened from the history
     st.session_state.ai_report = None  # belongs to the previous run
+    st.session_state.ai_fixes = []
     try:
         st.session_state.run_id = save_run(st.session_state.results, sources, st.session_state.comparison, started)
     except OSError as e:  # the run is still shown; it just won't appear in the history
         st.toast(f"Could not save this run to the history: {e}", icon=":material/warning:")
+    st.session_state.run_seconds = (datetime.now() - started).total_seconds()  # measured wall-clock time of this run
 
 
 def show_source_status(source: SourceResult, slot) -> None:
@@ -340,13 +374,6 @@ def landing_page() -> None:
     st.caption("After a run you get headline numbers, pass-rate charts for each side, a table of every "
                "difference, side-by-side outputs and stack traces, and the raw build logs.")
 
-    st.markdown("##### Try it with the bundled sample")
-    with st.container(border=True):
-        st.markdown(":material/account_balance: **pacs.008 payments (CBPR+ SR2025)**")
-        st.caption("An MVC pipeline that maps ISO 20022 credit transfer XML, validates CBPR+ business rules, "
-                   "converts to a DTO and saves it to an in-memory database. New gen adds SR2025 rules "
-                   "and carries one deliberate migration bug.")
-
     st.info("Click **Compare** in the left panel to compare the two code bases.", icon=":material/lightbulb:")
     st.page_link("app_pages/input_files.py", label="Browse all input cases and messages fed to both sides",
                  icon=":material/folder_open:")
@@ -388,7 +415,6 @@ with st.container(horizontal=True, gap="small", vertical_alignment="center"):
                                 help="Claude reads both code bases and writes a root-cause report. Uses the "
                                      "Anthropic API (ANTHROPIC_API_KEY); costs tokens and can take a few minutes."
                                 if can_explain else "Run Compare first: this needs the code bases of a fresh run")
-    st.page_link("app_pages/run_history.py", label="Run history", icon=":material/history:")
 
 if explain_clicked:
     if not os.environ.get("ANTHROPIC_API_KEY"):
@@ -402,9 +428,11 @@ if explain_clicked:
             with st.status("Claude is analysing the differences…", expanded=True) as progress:
                 st.session_state.ai_report = agent.run(lambda kind, text: st.write(
                     f":material/build: `{text}`" if kind == "tool" else text))
+                st.session_state.ai_fixes = agent.fixes
                 progress.update(label="Analysis complete", state="complete", expanded=False)
         except Exception as e:  # network, auth, rate limit: the rest of the page must keep working
             st.session_state.ai_report = None
+            st.session_state.ai_fixes = []
             st.error(f"{type(e).__name__}: {e}", title="The analysis failed", icon=":material/error:")
 
 if st.session_state.get("ai_report"):
@@ -441,6 +469,26 @@ tiles = [
 for i, (column, (label, value, pill, extra)) in enumerate(zip(st.columns(5), tiles)):
     with column.container(key=f"kpi_{i}", height="stretch"):
         st.metric(label, value, pill, **{"delta_color": "off", "delta_arrow": "off", "height": "stretch", **extra})
+
+# Estimated effort: what the full run would take by hand, built from this run's counts and measured times.
+# The per-case minutes are a rough assumption; the count and the times come from the run.
+MANUAL_MIN_PER_CASE = 5  # set up one input, run it on both sides, compare the two outputs
+build_test_minutes = (legacy.duration + newgen.duration) / 60  # a person waits for each suite, one after the other
+manual_minutes = lc["total"] * MANUAL_MIN_PER_CASE + build_test_minutes
+tool_seconds = st.session_state.get("run_seconds") or max(legacy.duration, newgen.duration)
+st.markdown(":material/timer: **Estimated manual effort saved**")
+estimate_tiles = [
+    ("By hand", f"{manual_minutes / 60:.1f} h", f"{lc['total']} cases × {MANUAL_MIN_PER_CASE} min"),
+    ("With DiffLens", f"{tool_seconds:.0f} s", "measured run"),
+    ("Time saved", f"{(manual_minutes * 60 - tool_seconds) / 3600:.1f} h", "estimate"),
+]
+for i, (column, (label, value, pill)) in enumerate(zip(st.columns(3), estimate_tiles)):
+    with column.container(key=f"kpi_est_{i}", height="stretch"):
+        st.metric(label, value, pill, delta_color="off", delta_arrow="off", height="stretch")
+st.caption(f"By hand: {lc['total']} hand-written cases × {MANUAL_MIN_PER_CASE} min, plus "
+           f"{build_test_minutes:.1f} min of builds and test runs. With DiffLens is the measured time of this run. "
+           f"The {lc['bulk']} bulk cases are not counted, since checking them by hand isn't practical. "
+           "Excludes reviewing results and fixing code.")
 
 # Donut cards
 c1, c2, c3 = st.columns(3)
@@ -506,6 +554,19 @@ with tab_diff:
         show_table(to_frame(diffs))
     else:
         st.success("No differences between the two runs.")
+    # Proposals from the AI explanation, grouped under the input case they fix. Nothing is changed on disk.
+    fixes = st.session_state.get("ai_fixes") or []
+    if fixes:
+        st.markdown("##### Proposed fixes")
+        st.caption("Proposals only: nothing has been changed. Review each one, make the change in your own repo, "
+                   "then commit and push.")
+        for case_id in dict.fromkeys(fix.get("case_id", "Other") for fix in fixes):
+            with st.container(border=True):
+                st.markdown(f"**{case_id}**")
+                for fix in (f for f in fixes if f.get("case_id", "Other") == case_id):
+                    st.markdown(f"`{fix['codebase']}` · `{fix['path']}` — {fix['reason']}")
+                    st.code(fix["old_text"], language="java")
+                    st.code(fix["new_text"], language="java")
 
 with tab_causes:
     causes = difference_causes(rows)
