@@ -1,6 +1,9 @@
 # Compact dual-mode dashboard theme (based on Streamlit's dense-dashboard template).
 # The settings appearance toggle stays available.
 
+[server]
+enableStaticServing = true
+
 [theme]
 showWidgetBorder = true
 showSidebarBorder = true

@@ -228,11 +228,10 @@ SOURCE_STATUS = {"legacy": legacy_status, "newgen": newgen_status}
 st.html("""<style>
   [class*="st-key-source_"] { position: relative; border: 1px solid color-mix(in srgb, currentColor 14%, transparent);
        border-radius: 16px; padding: 14px 16px 12px;
-       background: color-mix(in srgb, #2563EB 8%, transparent);
-       box-shadow: inset 3px 0 0 #2563EB, 0 12px 24px -20px rgba(37,99,235,.55);
+       background: color-mix(in srgb, currentColor 4%, transparent);
        transition: transform .2s ease, box-shadow .2s ease; }
   [class*="st-key-source_"]:hover { transform: translateY(-1px);
-       box-shadow: inset 3px 0 0 #2563EB, 0 16px 28px -20px rgba(37,99,235,.6); }
+       box-shadow: 0 8px 18px -14px color-mix(in srgb, currentColor 40%, transparent); }
   /* Card titles: the brand gradient as text. */
   [class*="st-key-source_"] [data-testid="stMarkdownContainer"] p { font-size: 1rem; letter-spacing: .01em; }
   [class*="st-key-source_"] [data-testid="stMarkdownContainer"] strong {
@@ -243,8 +242,7 @@ st.html("""<style>
        background: transparent !important; transition: background .2s ease; }
   [data-testid="stSidebarNavLink"]:hover { background: color-mix(in srgb, currentColor 6%, transparent) !important; }
   [data-testid="stSidebarNavLink"][aria-current="page"] {
-       background: color-mix(in srgb, #2563EB 14%, transparent) !important;
-       box-shadow: inset 3px 0 0 #2563EB; font-weight: 600; }
+       background: color-mix(in srgb, currentColor 8%, transparent) !important; font-weight: 600; }
   [class*="st-key-source_"] [data-testid="stTextInput"] label p {
        font-size: .72rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; opacity: .7; }
   [class*="st-key-source_"] [data-testid="stTextInput"] input { border-radius: 10px; }
@@ -346,7 +344,7 @@ def landing_page() -> None:
         "records what the code actually returned for every input, and lines the two runs up case by "
         "case, so you see exactly which behaviour changed, got fixed or broke.")
 
-    st.markdown("##### How it works")
+    st.link_button("How DiffLens works", "app/static/architecture.html", icon=":material/account_tree:")
     steps = [
         (":material/input:", "1. Shared input cases",
          "Every case lives once in a CSV file (`sample/inputs/`): a case id, the inputs and the expected "

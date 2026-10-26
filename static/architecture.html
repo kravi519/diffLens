@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DiffLens architecture</title>
+<style>
+  :root {
+    --bg: #f6f6f4; --card: #ffffff; --ink: #1d1d1f; --muted: #66666c; --line: #d4d4d9;
+    --blue: #2f6fdb; --blue-bg: #eaf1fd; --zone: #f0f4fb;
+    --red: #d64545; --green: #2e9d5b; --amber: #e0a100; --orange: #e8741c; --grey: #8d8d95;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #161618; --card: #222225; --ink: #ececf0; --muted: #9c9ca5; --line: #3a3a40;
+      --blue: #7aa6f0; --blue-bg: #1f2a40; --zone: #1c2230;
+      --red: #ef6b6b; --green: #5cc287; --amber: #f0bd3a; --orange: #f09052; --grey: #7d7d86;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #161618; --card: #222225; --ink: #ececf0; --muted: #9c9ca5; --line: #3a3a40;
+    --blue: #7aa6f0; --blue-bg: #1f2a40; --zone: #1c2230;
+    --red: #ef6b6b; --green: #5cc287; --amber: #f0bd3a; --orange: #f09052; --grey: #7d7d86;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 28px 24px 40px; background: var(--bg); color: var(--ink);
+    font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  h1 { margin: 0 0 4px; font-size: 22px; }
+  .lead { margin: 0 0 22px; color: var(--muted); max-width: 900px; }
+  .flow {
+    display: grid;
+    grid-template-columns: minmax(200px, 1fr) 36px minmax(440px, 2.1fr) 36px minmax(200px, 1fr) 36px minmax(200px, 1fr);
+    align-items: stretch;
+  }
+  .col { display: flex; flex-direction: column; }
+  .col-title {
+    font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 8px;
+  }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px;
+  }
+  .card h3 { margin: 0 0 6px; font-size: 14px; }
+  .mono { font: 12px/1.4 ui-monospace, Consolas, monospace; color: var(--blue); }
+  .card ul, .card ol { margin: 4px 0 0; padding-left: 18px; }
+  .card li { margin: 2px 0; }
+  .small { font-size: 12px; color: var(--muted); }
+  .down { text-align: center; font-size: 12px; color: var(--muted); padding: 6px 0; }
+  .arrow {
+    display: flex; align-items: center; justify-content: center; font-size: 26px; color: var(--muted);
+  }
+  .zone {
+    border: 1.5px dashed var(--blue); border-radius: 12px; background: var(--zone); padding: 12px;
+  }
+  .zone-title { font-weight: 700; color: var(--blue); margin-bottom: 10px; font-size: 13px; }
+  .lanes { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .lane { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+  .lane h3 { margin: 0; font-size: 14px; }
+  .lane .sub { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+  .step {
+    display: flex; gap: 8px; align-items: flex-start; font-size: 12.5px; padding: 5px 0;
+    border-top: 1px solid var(--line);
+  }
+  .step b {
+    flex: 0 0 auto; width: 18px; height: 18px; border-radius: 50%; background: var(--blue-bg);
+    color: var(--blue); font-size: 11px; text-align: center; line-height: 18px;
+  }
+  .zone-foot { font-size: 12px; color: var(--muted); margin-top: 10px; }
+  .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+  .cats { list-style: none; padding: 0; margin: 6px 0 0; }
+  .cats li { margin: 5px 0; font-size: 12.5px; }
+  .gap { margin-top: 10px; }
+  @media (max-width: 1000px) {
+    .flow { grid-template-columns: 1fr; }
+    .arrow { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<h1>DiffLens architecture</h1>
+<p class="lead">DiffLens runs the same input cases through a legacy and a new-gen Java code base, each with its own
+tests, and shows the input cases where the two results differ. Read left to right.</p>
+
+<div class="flow">
+
+  <div class="col">
+    <div class="col-title">1 · Get the code</div>
+    <div class="card">
+      <h3>Code bases</h3>
+      <ul class="small">
+        <li><span class="mono">kravi519/LegacyCode</span> (main)</li>
+        <li><span class="mono">kravi519/NewGenCode</span> (main)</li>
+      </ul>
+      <div class="small gap">Each side has its own repo, branch or commit in the left panel. Both are a small
+      pacs.008 payment app, laid out as MVC.</div>
+    </div>
+    <div class="down">▼</div>
+    <div class="card">
+      <h3>source.py <span class="small">· resolve_source()</span></h3>
+      <ol class="small">
+        <li>Download a GitHub zip snapshot (token for private repos)</li>
+        <li>Else the last download in <span class="mono">.work/repos/</span></li>
+        <li>Else the bundled copy in <span class="mono">sample/legacy</span> or <span class="mono">sample/newgen</span></li>
+      </ol>
+      <div class="small gap">Result: a project folder for each side.</div>
+    </div>
+  </div>
+
+  <div class="arrow">→</div>
+
+  <div class="col">
+    <div class="col-title">2 · Build and test each side</div>
+    <div class="card">
+      <h3>Shared input cases <span class="small">· sample/inputs/</span></h3>
+      <ul class="small">
+        <li><span class="mono">pacs008.csv</span>: 54 hand-written edge cases, each with an expected result</li>
+        <li><span class="mono">pacs008_bulk.csv</span>: 500 generated cases, no expected result</li>
+        <li>XML messages in <span class="mono">pacs008/</span> and <span class="mono">pacs008/bulk/</span></li>
+      </ul>
+    </div>
+    <div class="down">▼ the same cases feed both sides</div>
+    <div class="zone">
+      <div class="zone-title">java_runner.py · run_suite() · both sides in parallel</div>
+      <div class="lanes">
+        <div class="lane">
+          <h3>Legacy</h3>
+          <div class="sub">JDK 8 (javac --release 8)</div>
+          <div class="step"><b>1</b><span>javac compiles <span class="mono">src/main/java</span></span></div>
+          <div class="step"><b>2</b><span>javac compiles <span class="mono">src/test/java</span> (its own tests)</span></div>
+          <div class="step"><b>3</b><span>JUnit console launcher runs the tests</span></div>
+          <div class="step"><b>4</b><span>Recorder prints <span class="mono">RESULT|case|output</span></span></div>
+          <div class="step"><b>5</b><span>JUnit XML is read by <span class="mono">parse_reports()</span></span></div>
+        </div>
+        <div class="lane">
+          <h3>New gen</h3>
+          <div class="sub">JDK 21</div>
+          <div class="step"><b>1</b><span>javac compiles <span class="mono">src/main/java</span></span></div>
+          <div class="step"><b>2</b><span>javac compiles <span class="mono">src/test/java</span> (its own tests)</span></div>
+          <div class="step"><b>3</b><span>JUnit console launcher runs the tests</span></div>
+          <div class="step"><b>4</b><span>Recorder prints <span class="mono">RESULT|case|output</span></span></div>
+          <div class="step"><b>5</b><span>JUnit XML is read by <span class="mono">parse_reports()</span></span></div>
+        </div>
+      </div>
+      <div class="zone-foot">Maven and Gradle projects work too. Compiled classes are reused while the sources,
+      JDK and classpath stay the same.</div>
+    </div>
+  </div>
+
+  <div class="arrow">→</div>
+
+  <div class="col">
+    <div class="col-title">3 · Compare</div>
+    <div class="card">
+      <h3>compare.py <span class="small">· compare()</span></h3>
+      <div class="small">Matches the two runs on the case id, so the two suites can be written separately.</div>
+      <ul class="cats">
+        <li><span class="dot" style="background:var(--red)"></span><b>Regression</b>: passes on legacy, fails on new gen</li>
+        <li><span class="dot" style="background:var(--green)"></span><b>Fixed</b>: fails on legacy, passes on new gen</li>
+        <li><span class="dot" style="background:var(--amber)"></span><b>Changed</b>: another status change</li>
+        <li><span class="dot" style="background:var(--orange)"></span><b>Output differs</b>: same status, different output</li>
+        <li><span class="dot" style="background:var(--grey)"></span><b>Only in one run</b></li>
+        <li><span class="dot" style="background:var(--line)"></span><b>Same</b></li>
+      </ul>
+    </div>
+    <div class="down">▼</div>
+    <div class="card">
+      <h3>difference_causes()</h3>
+      <div class="small">Groups the differing outputs by the words only one side produced (e.g. <span class="mono">R49</span>,
+      <span class="mono">INSTRID</span>), so hundreds of bulk differences collapse into a few causes.</div>
+    </div>
+  </div>
+
+  <div class="arrow">→</div>
+
+  <div class="col">
+    <div class="col-title">4 · Results</div>
+    <div class="card">
+      <h3>Streamlit UI <span class="small">· app.py</span></h3>
+      <div class="small">Comparison, Input files and Run history pages: metrics, differences, root causes, all cases, failure details, build logs.</div>
+    </div>
+    <div class="down">▼</div>
+    <div class="card">
+      <h3>Reports <span class="small">· report.py</span></h3>
+      <div class="small">Excel and HTML downloads, built only when clicked.</div>
+    </div>
+    <div class="down">▼</div>
+    <div class="card">
+      <h3>History <span class="small">· history.py</span></h3>
+      <div class="small">Each run is saved to <span class="mono">.work/history/</span>; the newest 50 are kept.</div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
